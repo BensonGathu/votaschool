@@ -7,7 +7,7 @@ from .models import *
 from school.models import User
 
 
-class HeadTeacherForm(UserCreationForm):
+class HeadTeacherRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
@@ -19,6 +19,8 @@ class HeadTeacherForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_headteacher = True
+        user.is_staff = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")
@@ -28,7 +30,7 @@ class HeadTeacherForm(UserCreationForm):
         headteacher.save()
         return user
 
-class TeacherForm(UserCreationForm):
+class TeacherRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
@@ -40,6 +42,8 @@ class TeacherForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_teacher = True
+        user.is_staff = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")
@@ -51,7 +55,7 @@ class TeacherForm(UserCreationForm):
 
 
 
-class StudentForm(UserCreationForm):
+class StudentRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
@@ -66,6 +70,7 @@ class StudentForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_student = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")

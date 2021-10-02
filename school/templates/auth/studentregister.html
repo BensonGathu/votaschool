@@ -1,0 +1,7 @@
+{% load static %}
+{% load django_bootstrap5 %}
+<form action=""  method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Register" class="btn btn-block btn-primary">
+</form>
