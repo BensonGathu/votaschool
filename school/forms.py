@@ -56,7 +56,7 @@ class StudentForm(UserCreationForm):
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
     reg_number = forms.CharField(max_length=100,required=True)
-    classes = forms.ModelChoiceField(queryset=Classes.objects.all().order_by('id'),required=True)
+    classes = forms.ModelChoiceField(queryset=Classes.objects.all().order_by('name'),required=True)
     subjects = forms.ModelChoiceField(queryset=Subjects.objects.all().order_by('name'),required=True)
     hse = forms.CharField(max_length=100,required=True)
 
