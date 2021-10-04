@@ -1,0 +1,11 @@
+<h1>students</h1>
+
+{% for class in all_classes%}
+{{class.name}}
+{%endfor%}
+<br>
+
+{% for student in all_students%}
+{{student.user.username}}
+{%endfor%}
+
