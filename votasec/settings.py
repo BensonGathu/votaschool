@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'school',
+    "django_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -98,7 +99,7 @@ else:
            default=config('DATABASE_URL')
        )
    }
-
+AUTH_USER_MODEL = 'school.User'
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

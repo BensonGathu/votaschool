@@ -14,6 +14,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    
+
 class HeadTeacher(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -72,6 +74,9 @@ class Teacher(models.Model):
     def saveteacher(self):
         self.save()
 
+    @classmethod
+    def search_student(cls,staff_number):
+        return cls.objects.filter(staff_number=staff_number).user
 
 
 class Subjects(models.Model):
@@ -91,7 +96,7 @@ class Student(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     classes = models.ManyToManyField(Classes)
     subjects = models.ManyToManyField(Subjects)
-    reg_number = models.CharField(max_length=2000)
+    reg_number = models.CharField(max_length=2000,unique=True)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
     
@@ -101,6 +106,10 @@ class Student(models.Model):
 
     def savestudent(self):
         self.save()
+
+    @classmethod
+    def search_student(cls,reg_number):
+        return cls.objects.filter(reg_number=reg_number).user
 
 class Results(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
