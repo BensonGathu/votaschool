@@ -1,7 +1,9 @@
+import typing_extensions 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import models
 from django.db import transaction
+from django.forms import widgets
 
 from .models import *
 from school.models import User
@@ -61,7 +63,7 @@ class StudentRegisterForm(UserCreationForm):
     last_name = forms.CharField(max_length=100,required=True)
     reg_number = forms.CharField(max_length=100,required=True)
     classes = forms.ModelChoiceField(queryset=Classes.objects.all().order_by('name'),required=True)
-    subjects = forms.ModelChoiceField(queryset=Subjects.objects.all().order_by('name'),required=True)
+    subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
     hse = forms.CharField(max_length=100,required=True)
 
     class Meta(UserCreationForm.Meta):

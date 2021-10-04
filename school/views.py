@@ -16,6 +16,10 @@ class registerteacher(CreateView):
     form_class = TeacherRegisterForm
     template_name = '../templates/auth/teacherregister.html'
     
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
 
 
 class registerstudent(CreateView):
@@ -23,7 +27,11 @@ class registerstudent(CreateView):
     form_class = StudentRegisterForm
     template_name = '../templates/auth/studentregister.html'
 
-  
+    
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
 
 class registerheadteacher(CreateView):
     model = User
@@ -31,4 +39,9 @@ class registerheadteacher(CreateView):
     template_name = '../templates/auth/headregister.html'
 
    
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
 
