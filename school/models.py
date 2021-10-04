@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields.files import ImageField
 from django.db.models import Count, F, Value,Avg
+# from django.views.generic.detail import T
 # Create your models here.
 
 class User(AbstractUser):
@@ -31,42 +32,46 @@ class AcademicYear(models.Model):
     term = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.year
+        return "{} {}".format(self.year, self.term)
 
     def saveacademicyear(self):
         self.save()
 
 classes =(
-    ("Form One Term One", "Form One Term One"),
-    ("Form One Term Two", "Form One Term Two"),
-    ("Form One Term Three", "Form One Term Three"),
-    ("Form Two Term One", "Form Two Term One"),
-    ("Form Two Term Two", "Form Two Term Two"),
-    ("Form Two Term Three", "Form Two Term Three"),
-    ("Form Three Term One", "Form Three Term One"),
-    ("Form Three Term Two", "Form Three Term Two"),
-    ("Form Three Term Three", "Form Three Term Three"),
-    ("Form Four Term One","Form Four Term One"),
-    ("Form Four Term Two","Form Four Term Two"),
-    ("Form Four Term Three","Form Four Term Three"),
-
+    ("Form One", "Form One"),
+    ("Form Two", "Form Two"),
+    ("Form Three", "Form Three"),
+    ("Form Four ","Form Four"),
 )
+
 class Classes(models.Model):
     name = models.CharField(choices=classes,max_length=1000)
     year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return "{}--{}".format(self.name,self.year)
             
 
     
     def saveclasses(self):
         self.save()
 
+
+class Subjects(models.Model):
+    name = models.CharField(max_length=2000)
+    date_created = models.DateTimeField(auto_now_add=True)
+    classes = models.ManyToManyField(Classes)
+    def __str__(self):
+        return self.name
+
+    def savesubjects(self):
+        self.save()
+
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    profile_photo = models.ImageField(upload_to='Profiles/')
+    subjects = models.ManyToManyField(Subjects)
+    profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
@@ -79,22 +84,13 @@ class Teacher(models.Model):
         return cls.objects.filter(staff_number=staff_number).user
 
 
-class Subjects(models.Model):
-    name = models.CharField(max_length=2000)
-    teachers = models.ManyToManyField(Teacher,blank=True,null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.name
-
-    def savesubjects(self):
-        self.save()
 
 
 class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    profile_photo = models.ImageField(upload_to='Profiles/')
-    classes = models.ManyToManyField(Classes)
+    profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students")
     subjects = models.ManyToManyField(Subjects)
     reg_number = models.CharField(max_length=2000,unique=True)
     hse = models.CharField(max_length=2000)
@@ -120,7 +116,7 @@ class Results(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str((self.exam1 + self.exam2)/2 + self.endterm)
+        return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
 
 
 

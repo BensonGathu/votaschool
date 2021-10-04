@@ -45,3 +45,11 @@ class registerheadteacher(CreateView):
         login(self.request, user)
         return redirect('/')
 
+
+def allstudents(request):
+    all_classes = Classes.objects.all()
+    all_students = Student.objects.filter(classes__name="Form One").all()
+    
+    return render(request,"students.html",{"all_classes":all_classes,"all_students":all_students})
+
+
