@@ -62,11 +62,14 @@ class Subjects(models.Model):
     name = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
     classes = models.ManyToManyField(Classes)
+
+
     def __str__(self):
         return self.name
 
     def savesubjects(self):
         self.save()
+        
 
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -74,6 +77,7 @@ class Teacher(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.user.username
     def saveteacher(self):
@@ -82,9 +86,6 @@ class Teacher(models.Model):
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
-
-
-
 
 
 class Student(models.Model):
