@@ -59,7 +59,7 @@ class Classes(models.Model):
 
 class Subjects(models.Model):
     name = models.CharField(max_length=2000)
-    classes = models.ManyToManyField(Classes)
+    classes = models.ManyToManyField(Classes,related_name="subjects")
     date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
@@ -69,7 +69,7 @@ class Subjects(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    subjects = models.ManyToManyField(Subjects)
+    subjects = models.ManyToManyField(Subjects,related_name="teacher")
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
