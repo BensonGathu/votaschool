@@ -9,7 +9,12 @@ urlpatterns =[
     path('teacherregister',views.registerteacher.as_view(),name="teacherregister"),
     path('studentregister',views.registerstudent.as_view(),name="studentregister"),
     path('headregister',views.registerheadteacher.as_view(),name="headregister"),
-    path('allstudents',views.allstudents,name="allstudents"),    
+    path('allstudents',views.allstudents,name="allstudents"),  
+    path("addteacher",views.addTeacher,name="addteacher"),
+    path("addstudent",views.addStudent,name="addstudent"),
+    path("addsubject",views.addSubject,name="addsubject"), 
+    path("allclasses/",views.classes,name="allclasses"),
+    path("subject/<int:id>/",views.subject,name="subject"),
 ]
 
 if settings.DEBUG:

@@ -99,15 +99,18 @@ class addAcademicYearForm(forms.ModelForm):
         model = AcademicYear
         fields = '__all__'
 
+
 class addTeacherForm(forms.ModelForm):
     class Meta:
         model = Teacher
         exclude = ['profile_photo']
 
+
 class addStudentForm(forms.ModelForm):
     class Meta:
         model = Student
         exclude = ['profile_photo']
+
 
 class addClassForm(forms.ModelForm):
     class Meta:
@@ -119,3 +122,9 @@ class addResultsForm(forms.ModelForm):
     class Meta:
         model = Results
         fields = "__all__"
+
+
+# class addFeeForm(forms.ModelForm):
+#     class Meta:
+#         model = Fees
+#         fields = "__all__"
