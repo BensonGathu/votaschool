@@ -14,6 +14,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    
+
 class HeadTeacher(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -28,26 +30,18 @@ class AcademicYear(models.Model):
     year =  models.CharField(max_length=2000)
     term = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
+   
     def __str__(self):
-        return self.year
+        return "{} {}".format(self.year, self.term)
 
     def saveacademicyear(self):
         self.save()
 
 classes =(
-    ("Form One Term One", "Form One Term One"),
-    ("Form One Term Two", "Form One Term Two"),
-    ("Form One Term Three", "Form One Term Three"),
-    ("Form Two Term One", "Form Two Term One"),
-    ("Form Two Term Two", "Form Two Term Two"),
-    ("Form Two Term Three", "Form Two Term Three"),
-    ("Form Three Term One", "Form Three Term One"),
-    ("Form Three Term Two", "Form Three Term Two"),
-    ("Form Three Term Three", "Form Three Term Three"),
-    ("Form Four Term One","Form Four Term One"),
-    ("Form Four Term Two","Form Four Term Two"),
-    ("Form Four Term Three","Form Four Term Three"),
-
+    ("Form One", "Form One"),
+    ("Form Two", "Form Two"),
+    ("Form Three", "Form Three"),
+    ("Form Four ","Form Four"),
 )
 class Classes(models.Model):
     name = models.CharField(choices=classes,max_length=1000)
@@ -55,10 +49,9 @@ class Classes(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return "{} {}".format(self.name, self.year)
             
 
-    
     def saveclasses(self):
         self.save()
 
@@ -72,6 +65,9 @@ class Teacher(models.Model):
     def saveteacher(self):
         self.save()
 
+    @classmethod
+    def search_student(cls,staff_number):
+        return cls.objects.filter(staff_number=staff_number).user
 
 
 class Subjects(models.Model):
@@ -91,7 +87,7 @@ class Student(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     classes = models.ManyToManyField(Classes)
     subjects = models.ManyToManyField(Subjects)
-    reg_number = models.CharField(max_length=2000)
+    reg_number = models.CharField(max_length=2000,unique=True)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
     
@@ -101,6 +97,10 @@ class Student(models.Model):
 
     def savestudent(self):
         self.save()
+
+    @classmethod
+    def search_student(cls,reg_number):
+        return cls.objects.filter(reg_number=reg_number).user
 
 class Results(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)

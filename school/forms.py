@@ -1,13 +1,15 @@
+import typing_extensions 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import models
 from django.db import transaction
+from django.forms import widgets
 
 from .models import *
 from school.models import User
 
 
-class HeadTeacherForm(UserCreationForm):
+class HeadTeacherRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
@@ -19,6 +21,8 @@ class HeadTeacherForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_headteacher = True
+        user.is_staff = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")
@@ -28,7 +32,7 @@ class HeadTeacherForm(UserCreationForm):
         headteacher.save()
         return user
 
-class TeacherForm(UserCreationForm):
+class TeacherRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
@@ -40,6 +44,8 @@ class TeacherForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_teacher = True
+        user.is_staff = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")
@@ -51,13 +57,13 @@ class TeacherForm(UserCreationForm):
 
 
 
-class StudentForm(UserCreationForm):
+class StudentRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=100,required=True)
     middle_name = forms.CharField(max_length=100,required=True)
     last_name = forms.CharField(max_length=100,required=True)
     reg_number = forms.CharField(max_length=100,required=True)
     classes = forms.ModelChoiceField(queryset=Classes.objects.all().order_by('name'),required=True)
-    subjects = forms.ModelChoiceField(queryset=Subjects.objects.all().order_by('name'),required=True)
+    subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
     hse = forms.CharField(max_length=100,required=True)
 
     class Meta(UserCreationForm.Meta):
@@ -66,6 +72,7 @@ class StudentForm(UserCreationForm):
     @transaction.atomic
     def data_save(self):
         user = super().save(commit=False)
+        user.is_student = True
         user.first_name = self.cleaned_data.get("first_name")
         user.middle_name = self.cleaned_data.get("middle_name")
         user.last_name = self.cleaned_data.get("last_name")
