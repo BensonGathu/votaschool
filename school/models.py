@@ -24,7 +24,7 @@ class HeadTeacher(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.user.username
+        return self.user.username 
 
 
 class AcademicYear(models.Model):
@@ -52,18 +52,16 @@ class Classes(models.Model):
 
     def __str__(self):
         return "{}--{}".format(self.name,self.year)
-            
-
+        
+    
     def saveclasses(self):
         self.save()
 
 
 class Subjects(models.Model):
     name = models.CharField(max_length=2000)
-    date_created = models.DateTimeField(auto_now_add=True)
     classes = models.ManyToManyField(Classes)
-
-
+    date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
 
@@ -92,7 +90,7 @@ class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students")
-    subjects = models.ManyToManyField(Subjects)
+    subjects = models.ManyToManyField(Subjects,related_name="students")
     reg_number = models.CharField(max_length=2000,unique=True)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
