@@ -75,6 +75,7 @@ class Teacher(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    classes = models.ManyToManyField(Classes)
 
     def __str__(self):
         return self.user.username
