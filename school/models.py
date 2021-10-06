@@ -5,6 +5,7 @@ from django.db.models.fields.files import ImageField
 from django.db.models import Count, F, Value,Avg
 from django.db.models.query_utils import subclasses
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
 # from django.views.generic.detail import T
 # Create your models here.
 
@@ -27,6 +28,32 @@ class HeadTeacher(models.Model):
     
     def __str__(self):
         return self.user.username 
+    
+    def save_headteacher(self):
+        self.save()
+
+    def update_headteacher(self, using=None, fields=None, **kwargs):
+        if fields is not None:
+            fields = set(fields)
+            deferred_fields = self.get_deferred_fields()
+            if fields.intersection(deferred_fields):
+                fields = fields.union(deferred_fields)
+        super().refresh_from_db(using, fields, **kwargs)
+
+    def delete_headteacher(self):
+        self.delete()
+
+    def create_headteacher_profile(sender, **kwargs):
+        if kwargs['created']:
+            headteacher_profile = HeadTeacher.objects.create(
+                user=kwargs['instance'])
+
+    post_save.connect(create_headteacher_profile, sender=User)
+
+
+
+
+
 terms = (
         ("Term one Jan- April"," Term one Jan- April"),
         ("Term two May- August", "Term two May- August"),
@@ -105,6 +132,25 @@ class Teacher(models.Model):
     def saveteacher(self):
         self.save()
 
+    def update_teacher(self, using=None, fields=None, **kwargs):
+        if fields is not None:
+            fields = set(fields)
+            deferred_fields = self.get_deferred_fields()
+            if fields.intersection(deferred_fields):
+                fields = fields.union(deferred_fields)
+        super().refresh_from_db(using, fields, **kwargs)
+
+    def delete_teacher(self):
+        self.delete()
+
+
+    def create_teacher_profile(sender, **kwargs):
+        if kwargs['created']:
+            teacher_profile = Teacher.objects.create(
+                user=kwargs['instance'])
+
+    post_save.connect(create_teacher_profile, sender=User)
+
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
@@ -123,12 +169,33 @@ class Student(models.Model):
     def __str__(self):
         return self.user.username
 
-    def savestudent(self):
+    def save_student(self):
         self.save()
+
+    def update_student(self, using=None, fields=None, **kwargs):
+        if fields is not None:
+            fields = set(fields)
+            deferred_fields = self.get_deferred_fields()
+            if fields.intersection(deferred_fields):
+                fields = fields.union(deferred_fields)
+        super().refresh_from_db(using, fields, **kwargs)
+
+    def delete_student(self):
+        self.delete()
+    def create_student_profile(sender, **kwargs):
+        if kwargs['created']:
+            student_profile = Student.objects.create(
+                user=kwargs['instance'])
+
+    post_save.connect(create_student_profile, sender=User)
 
     @classmethod
     def search_student(cls,reg_number):
         return cls.objects.filter(reg_number=reg_number).user
+
+
+   
+
 
 class Results(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
