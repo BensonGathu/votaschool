@@ -1,4 +1,8 @@
-{{teacher}}
+<h5>TR {{teacher}}</h5>
 {% for subject in subjects %}
-    {{subject.classes}}
+    <h4>Subject: {{subject.name}}</h4>
+    <h5>Class: {{subject.classes}}</h5>
+    <h5> students: {{subject.students.all}}</h5>
+    
 {%endfor%}
+
