@@ -110,11 +110,11 @@ def subject(request,id):
 
 def addresults(request):
     # subjects = Subjects.objects.filter(teacher.id=request.id)
-    teacher = Teacher.objects.filter(user_id=request.user)
-    # subjects = teacher.subjects.all()
-    subjects = Subjects.objects.filter()
-    # for subject in subjectss:
-    #     students = get_object_or_404(Student,subject in Student.subjects)
+    teacher = Teacher.objects.get(user_id=request.user)
+    subjects = teacher.subjects.all()
 
     return render(request,"results.html",{"teacher":teacher,"subjects":subjects})
-    
+
+def addmarks(request,id):
+    pass
+

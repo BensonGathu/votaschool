@@ -16,6 +16,8 @@ urlpatterns =[
     path("allclasses/",views.classes,name="allclasses"),
     path("subject/<int:id>/",views.subject,name="subject"),
     path("addresults/",views.addresults,name="addresults"),
+    # path("subjectdetails/<int:id>/",views.subjectdetails,name="subjectdetails"),
+
 ]
 
 if settings.DEBUG:
