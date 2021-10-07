@@ -107,3 +107,14 @@ def classes(request):
 def subject(request,id):
     subject = get_object_or_404(Subjects, pk=id)
     return render(request,"subject.html",{"subject":subject})
+
+def addresults(request):
+    # subjects = Subjects.objects.filter(teacher.id=request.id)
+    teacher = Teacher.objects.filter(user_id=request.user)
+    # subjects = teacher.subjects.all()
+    subjects = Subjects.objects.filter()
+    # for subject in subjectss:
+    #     students = get_object_or_404(Student,subject in Student.subjects)
+
+    return render(request,"results.html",{"teacher":teacher,"subjects":subjects})
+    
