@@ -121,6 +121,10 @@ class Subjects(models.Model):
     def savesubjects(self):
         self.save()
 
+    @classmethod
+    def get_class_subjects(cls,student_class):
+        return cls.objects.filter(classes=student_class)
+
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     subjects = models.ManyToManyField(Subjects,related_name="teacher")
@@ -129,7 +133,7 @@ class Teacher(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.user.username
-    def saveteacher(self):
+    def save_teacher(self):
         self.save()
 
     def update_teacher(self, using=None, fields=None, **kwargs):
@@ -149,7 +153,7 @@ class Teacher(models.Model):
             teacher_profile = Teacher.objects.create(
                 user=kwargs['instance'])
 
-    post_save.connect(create_teacher_profile, sender=User)
+    # post_save.connect(create_teacher_profile, sender=User)
 
     @classmethod
     def search_student(cls,staff_number):
