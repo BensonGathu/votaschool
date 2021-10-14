@@ -2,6 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import render,redirect,get_object_or_404
 from. forms import *
 from .models import *
+from django.views.generic.edit import FormView
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
 
@@ -9,42 +10,143 @@ from django.http import HttpResponseRedirect
 
 def home(request):
       return render(request,'../templates/home.html')
-def register(request):
-    return render(request,'../templates/auth/register.html')
+# def register(request):
+#     return render(request,'../templates/auth/register.html')
 
-class registerteacher(CreateView):
-    model = User
+class UserCreateView(FormView):
+    form_class = CustomUserForm
+    template_name = '../templates/auth/register.html'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        user = form.save()
+        if user.user_type == "student":
+            return redirect(f'/create-student/{user.id}')
+        elif user.user_type == "principal":
+            return redirect(f'/create-principal/{user.id}')
+        
+        elif user.user_type == "teacher":
+            return redirect(f'/create-teacher/{user.id}')
+        
+
+
+    def get_context_data(self, **kwargs):
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context.update({
+            'user_create': True,
+            'student_create': False,
+            'teacher_create': True
+        })
+        return context
+
+
+
+
+class PrincipalView(FormView):
+    form_class = PrincipalRegistrationForm
+    template_name =  '../templates/auth/headregister.html'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.user_id = self.kwargs['_id']
+        user = User.objects.get(id=self.kwargs['id'])
+        principal = Principal.objects.create(user=user)
+        principal.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(PrincipalView, self).get_context_data(**kwargs)
+        context.update({
+            'user_create': False,
+            'student_create': True
+        })
+        return context
+
+class TeacherView(FormView):
     form_class = TeacherRegisterForm
     template_name = '../templates/auth/teacherregister.html'
-    
+
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('/')
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.user_id = self.kwargs['_id']
+        user = User.objects.get(id=self.kwargs['id'])
+        teacher = Teacher.objects.create(user=user)
+        teacher.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(TeacherView, self).get_context_data(**kwargs)
+        context.update({
+            'user_create': False,
+            'student_create': True
+        })
+        return context
 
 
-class registerstudent(CreateView):
-    model = User
+
+class StudentView(FormView):
     form_class = StudentRegisterForm
     template_name = '../templates/auth/studentregister.html'
+  
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.user_id = self.kwargs['_id']
+        user = User.objects.get(id=self.kwargs['id'])
+        student = Student.objects.create(user=user)
+        student.save()
+        print("sses",student.classes)
+        return super().form_valid(form)
+        return redirect("home")
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentView, self).get_context_data(**kwargs)
+        context.update({
+            'user_create': False,
+            'student_create': True
+        })
+        return context
+def load_subjects(request):
+    class_id = request.GET.get('classes_id')
+    subjects = Subjects.objects.filter(classes_id=class_id)
+    return render(request,'../templates/loadsubjects.html',{"subjects":subjects})
+
+# class registerteacher(CreateView):
+#     model = User
+#     form_class = TeacherRegisterForm
+#     template_name = '../templates/auth/teacherregister.html'
+    
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('/')
+ 
+
+# class registerstudent(CreateView):
+#     model = User
+#     form_class = StudentRegisterForm
+#     template_name = '../templates/auth/studentregister.html'
 
     
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('/')
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('/')
 
-class registerheadteacher(CreateView):
-    model = User
-    form_class = HeadTeacherRegisterForm
-    template_name = '../templates/auth/headregister.html'
+# class registerheadteacher(CreateView):
+#     model = User
+#     form_class = HeadTeacherRegisterForm
+#     template_name = '../templates/auth/headregister.html'
 
    
 
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('/')
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('/')
 
 
 def allstudents(request):
@@ -111,10 +213,12 @@ def subject(request,id):
 def addresults(request):
     # subjects = Subjects.objects.filter(teacher.id=request.id)
     teacher = Teacher.objects.get(user_id=request.user)
-    subjects = teacher.subjects.all()
-
-    return render(request,"results.html",{"teacher":teacher,"subjects":subjects})
+    subjects = Subjects.objects.filter(teacher=request.user.id)
+    form = addResultsForm()
+    return render(request,"results.html",{"teacher":teacher,"subjects":subjects,"form":form})
 
 def addmarks(request,id):
     pass
+    
+    
 
