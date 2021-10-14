@@ -1,7 +1,21 @@
 {% load static %}
-{% load django_bootstrap5 %}
-<form action=""  method="POST">
+{% load bootstrap5 %}
+
+<form  action="" method="post">
     {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Register" class="btn btn-block btn-primary">
-</form>
+    {% bootstrap_form form %}
+
+    <div class="form-group">
+      <input type="submit" class="btn btn-primary btn-sm" value="Add">
+    </div>
+
+    <input type="hidden" name="next" value="{{next}}">
+
+  </form>
+
+  <!-- {{all_students}} -->
+
+  {% for student in all_students%}
+
+  {{student.subjects.name}}
+  {% endfor%}

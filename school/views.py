@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 def home(request):
-      return render(request,'../templates/home.html')
+      return render(request,'../templates/hod/hod.html')
 def register(request):
     return render(request,'../templates/auth/register.html')
 
