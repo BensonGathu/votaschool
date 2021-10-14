@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 def home(request):
-      return render(request,'../templates/home.html')
+      return render(request,'../templates/hod/hod.html')
 # def register(request):
 #     return render(request,'../templates/auth/register.html')
 
@@ -221,5 +221,19 @@ def addmarks(request,id):
     pass
 
 
+def teacher(request):
+    teacher = Teacher.objects.get(user_id=request.user)
+    subjects = Subjects.objects.filter(teacher=request.user.id)
+    return render(request,"teacher/teacher.html",)
+
+def Students(request,id):
+    subject = get_object_or_404(Subjects,pk=id)
     
+
+    all_students = subject.students.all()
+    
+    # students = Student.objects.filter(subjects_id=subject)
+    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students})
+    
+
 
