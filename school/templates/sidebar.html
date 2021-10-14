@@ -1,5 +1,5 @@
 {% load static %}
-<aside class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 1000px;">
+<aside class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; ">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
       <img src="" alt="" class="brand-image img-circle elevation-3"
@@ -36,24 +36,16 @@
           </li>
           
           <li class="nav-item">
-            {% url 'teacherregister' as teacherregister %}
-            <a href="{{ teacherregister }}" class="nav-link {% if request.path == teacherregister %} active {% endif %}">
+            {% url 'createuser' as createuser %}
+            <a href="{{ createuser }}" class="nav-link {% if request.path == createuser %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Add Teacher
+                Add User
               </p>
             </a>
           </li>
 
-          <li class="nav-item">
-            {% url 'studentregister' as studentregister %}
-            <a href="{{ studentregister }}" class="nav-link {% if request.path == studentregister %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Add Student
-              </p>
-            </a>
-          </li>
+    
 
           <li class="nav-item">
             {% url 'addsubject' as addsubject %}
