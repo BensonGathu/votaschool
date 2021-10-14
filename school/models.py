@@ -9,18 +9,23 @@ from django.db.models.signals import post_save
 # from django.views.generic.detail import T
 # Create your models here.
 
+
+USER_TYPES = [
+    ('teacher', 'Teacher'),
+    ('student', 'Student'),
+    ('principal', 'principal')
+]
 class User(AbstractUser):
-    is_headteacher = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=False)
-    is_student = models.BooleanField(default=False)
+    user_type = models.CharField(
+        max_length=20, choices=USER_TYPES, blank=True, null=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True) 
 
     
 
-class HeadTeacher(models.Model):
+class Principal(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     staff_number = models.CharField(max_length=2000,unique=True)
@@ -29,10 +34,10 @@ class HeadTeacher(models.Model):
     def __str__(self):
         return self.user.username 
     
-    def save_headteacher(self):
+    def save_principal(self):
         self.save()
 
-    def update_headteacher(self, using=None, fields=None, **kwargs):
+    def update_principal(self, using=None, fields=None, **kwargs):
         if fields is not None:
             fields = set(fields)
             deferred_fields = self.get_deferred_fields()
@@ -40,15 +45,15 @@ class HeadTeacher(models.Model):
                 fields = fields.union(deferred_fields)
         super().refresh_from_db(using, fields, **kwargs)
 
-    def delete_headteacher(self):
+    def delete_principal(self):
         self.delete()
 
-    def create_headteacher_profile(sender, **kwargs):
+    def create_principal_profile(sender, **kwargs):
         if kwargs['created']:
-            headteacher_profile = HeadTeacher.objects.create(
+            principal_profile = Principal.objects.create(
                 user=kwargs['instance'])
 
-    post_save.connect(create_headteacher_profile, sender=User)
+    # post_save.connect(create_principal_profile, sender=User)
 
 
 
@@ -97,37 +102,8 @@ class Classes(models.Model):
     def saveclasses(self):
         self.save()
 
-subject_names = (
-    ("English", "English"),
-    ("Mathematics","Mathematics"),
-    ("Kiswahili", "Kiswahili"),
-    ("Chemistry","Chemistry"),
-    ("Physics", "Physics"),
-    ("Biology","Biology"),
-    ("Geography", "Geography"),
-    ("History", "History"),
-    ("C.R.E", "C.R.E"),
-    ("Agriculture", "Agriculture"),
-    ("Business Studies", "Business Studies"),
-    )
-class Subjects(models.Model):
-    name = models.CharField(choices=subject_names,max_length=2000)
-    classes = models.ForeignKey(Classes,related_name="subjects",on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return "{} {}".format(self.name,self.classes)
-    class Meta:
-        unique_together=("name", "classes")
-    def savesubjects(self):
-        self.save()
-
-    @classmethod
-    def get_class_subjects(cls,student_class):
-        return cls.objects.filter(classes=student_class)
-
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    subjects = models.ManyToManyField(Subjects,related_name="teacher")
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
     staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -158,6 +134,37 @@ class Teacher(models.Model):
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
+
+
+subject_names = (
+    ("English", "English"),
+    ("Mathematics","Mathematics"),
+    ("Kiswahili", "Kiswahili"),
+    ("Chemistry","Chemistry"),
+    ("Physics", "Physics"),
+    ("Biology","Biology"),
+    ("Geography", "Geography"),
+    ("History", "History"),
+    ("C.R.E", "C.R.E"),
+    ("Agriculture", "Agriculture"),
+    ("Business Studies", "Business Studies"),
+    )
+class Subjects(models.Model):
+    name = models.CharField(choices=subject_names,max_length=2000)
+    classes = models.ForeignKey(Classes,related_name="subjects",on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return "{} {}".format(self.name,self.classes)
+    class Meta:
+        unique_together=("name", "classes")
+    def savesubjects(self):
+        self.save()
+
+    @classmethod
+    def get_class_subjects(cls,student_class):
+        return cls.objects.filter(classes=student_class)
+
 
 
 class Student(models.Model):
@@ -191,7 +198,7 @@ class Student(models.Model):
             student_profile = Student.objects.create(
                 user=kwargs['instance'])
 
-    post_save.connect(create_student_profile, sender=User)
+    # post_save.connect(create_student_profile, sender=User)
 
     @classmethod
     def search_student(cls,reg_number):
