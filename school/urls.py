@@ -17,11 +17,14 @@ urlpatterns =[
     path("subject/<int:id>/",views.subject,name="subject"),
     path("addresults/",views.addresults,name="addresults"),
     # path("subjectdetails/<int:id>/",views.subjectdetails,name="subjectdetails"),
-    path("create-user/",views.UserCreateView.as_view(),name="create-user"),
+    path("create-user/",views.UserCreateView.as_view(),name="createuser"),
     path("create-student/<int:id>/",views.StudentView.as_view(),name="create-student"),
     path("create-teacher/<int:id>/",views.TeacherView.as_view(),name="create-teacher"),
     path("create-principal/<int:id>/",views.PrincipalView.as_view(),name="create-principal"),
     path("ajax/load-subjects/",views.load_subjects,name='ajax_load_subjects'),
+    path("teacher",views.teacher,name="teacher"),
+    path("students/<int:id>",views.Students,name="students")
+
 
 ]
 
