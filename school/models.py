@@ -167,6 +167,7 @@ class Results(models.Model):
         return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
     class Meta:
         unique_together=("student", "subjects")
+        
 class report(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     all_subjects = models.ManyToManyField(Results)

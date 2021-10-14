@@ -217,9 +217,6 @@ def addresults(request):
     form = addResultsForm()
     return render(request,"results.html",{"teacher":teacher,"subjects":subjects,"form":form})
 
-def addmarks(request,id):
-    pass
-
 
 def teacher(request):
     teacher = Teacher.objects.get(user_id=request.user)
@@ -233,7 +230,26 @@ def Students(request,id):
     all_students = subject.students.all()
     
     # students = Student.objects.filter(subjects_id=subject)
-    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students})
+    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students,})
+
+def addmarks(request,id):
+    subject = Subjects.objects.filter(teacher=request.user.id)[0]
+    student = get_object_or_404(Student,pk=id)
+    marks = addResultsForm()
+    if request.method == 'POST':
+        form = addResultsForm(request.POST)
+        if form.is_valid():
+            marks = form.save(commit=False)
+            marks.student = student
+            marks.subject = subject
+            marks.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addResultsForm()  
+    return render(request,"teacher/marks.html",{"form":form})  
+
+
+
     
 
 
