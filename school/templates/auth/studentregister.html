@@ -7,10 +7,10 @@
     <input type="submit" value="Register" class="btn btn-block btn-primary">
 </form> -->
   {%block content%}
-<div align="left">
+<div >
   <h2>Student  Form</h2>
 
-  <form method="post" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
+  <form align="left" method="post" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
     {% csrf_token %}
     <table>
       {{ form.as_table }}

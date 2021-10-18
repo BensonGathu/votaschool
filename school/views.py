@@ -101,7 +101,6 @@ class StudentView(FormView):
         student = Student.objects.create(user=user)
         student.save()
         return super().form_valid(form)
-        print(student.classes)
         return redirect("home")
 
     def get_context_data(self, **kwargs):
@@ -230,25 +229,28 @@ def Students(request,id):
     
 
     all_students = subject.students.all()
-    
+    request.session['current_class_id'] = id
+
     # students = Student.objects.filter(subjects_id=subject)
     return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students,})
 
 def addmarks(request,id):
-    subject = Subjects.objects.filter(teacher=request.user.id)[0]
     student = get_object_or_404(Student,pk=id)
+    subjectid = request.session.get('current_class_id')
+    subject = get_object_or_404(Subjects,pk=subjectid)
+    print(subject)
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST)
         if form.is_valid():
             marks = form.save(commit=False)
             marks.student = student
-            marks.subject = subject
+            marks.subjects = subject
             marks.save()
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
-    return render(request,"teacher/marks.html",{"form":form})  
+    return render(request,"teacher/marks.html",{"form":form,"subject":subject})   
 
 
 
