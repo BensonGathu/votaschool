@@ -54,7 +54,9 @@ class PrincipalView(FormView):
         user = User.objects.get(id=self.kwargs['id'])
         principal = Principal.objects.create(user=user)
         principal.save()
+        print(principal)
         return super().form_valid(form)
+ 
 
     def get_context_data(self, **kwargs):
         context = super(PrincipalView, self).get_context_data(**kwargs)
@@ -98,8 +100,8 @@ class StudentView(FormView):
         user = User.objects.get(id=self.kwargs['id'])
         student = Student.objects.create(user=user)
         student.save()
-        print("sses",student.classes)
         return super().form_valid(form)
+        print(student.classes)
         return redirect("home")
 
     def get_context_data(self, **kwargs):
