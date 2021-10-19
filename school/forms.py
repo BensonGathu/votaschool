@@ -13,7 +13,7 @@ from school.models import User
 
 
 class CustomUserForm(UserCreationForm):
-    class Meta:
+    class Meta:  
         model = User
         fields = ('user_type','username', 'password1', 'password2',)
 

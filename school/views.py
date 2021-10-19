@@ -88,6 +88,7 @@ class TeacherView(FormView):
 
 
 class StudentView(FormView):
+    model = User
     form_class = StudentRegisterForm
     template_name = '../templates/auth/studentregister.html'
   

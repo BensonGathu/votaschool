@@ -8,18 +8,21 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 # from django.views.generic.detail import T
 # Create your models here.
-USER_TYPES = [
-    ('teacher', 'Teacher'),
-    ('student', 'Student'),
-    ('principal', 'principal')
-]
+
+
 class User(AbstractUser):
-    user_type = models.CharField(
-        max_length=20, choices=USER_TYPES, blank=True, null=True)
+    USER_TYPES = (
+        ('teacher', 'Teacher'),
+        ('student', 'Student'),
+        ('principal', 'principal')
+    )
+
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, blank=True, null=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
+
 class Principal(models.Model):
     profile_photo = models.ImageField(upload_to='Profiles/')
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -48,6 +51,7 @@ terms = (
         ("Term two May- August", "Term two May- August"),
         ("Term three September- December", "Term three September- December"),
     )
+
 class AcademicYear(models.Model):
     year =  models.CharField(max_length=2000)
     term = models.CharField(choices=terms,max_length=2000)
@@ -74,6 +78,7 @@ class Classes(models.Model):
         unique_together=("name", "year")
     def saveclasses(self):
         self.save()
+
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
@@ -100,6 +105,7 @@ class Teacher(models.Model):
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
+
 subject_names = (
     ("English", "English"),
     ("Mathematics","Mathematics"),
@@ -113,6 +119,7 @@ subject_names = (
     ("Agriculture", "Agriculture"),
     ("Business Studies", "Business Studies"),
     )
+
 class Subjects(models.Model):
     name = models.CharField(choices=subject_names,max_length=2000)
     classes = models.ForeignKey(Classes,related_name="subjects",on_delete=models.CASCADE)
@@ -127,6 +134,7 @@ class Subjects(models.Model):
     @classmethod
     def get_class_subjects(cls,student_class):
         return cls.objects.filter(classes=student_class)
+
 class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
@@ -156,6 +164,7 @@ class Student(models.Model):
     @classmethod
     def search_student(cls,reg_number):
         return cls.objects.filter(reg_number=reg_number).user
+
 class Results(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE)
@@ -181,6 +190,7 @@ class report(models.Model):
         pass
     def __str__(self):
         return str(self.mean())
+
 class Fees(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     amount_payable = models.FloatField()
