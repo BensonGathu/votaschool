@@ -10,6 +10,7 @@
     <div class="card-body">
         {% for students in all_students%}
         {{students.user.first_name}} {{students.user.middle_name}} {{students.user.last_name}}  <a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a>
-    {% endfor%}
+        <br>
+        {% endfor%}
     </div>
   </div>
