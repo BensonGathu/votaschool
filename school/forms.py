@@ -11,25 +11,144 @@ User = get_user_model()
 from .models import *
 from school.models import User
 
-
-class CustomUserForm(UserCreationForm):
-    class Meta:  
-        model = User
-        fields = ('user_type','username', 'password1', 'password2',)
-
-
-class PrincipalRegistrationForm(forms.Form):
-    user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    first_name = forms.CharField(max_length=100, required=True)
+class PrincipalSignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=20, required=True)
     middle_name = forms.CharField(max_length=100, required=True)
-    last_name = forms.CharField(max_length=100, required=True)
-    profile_photo = forms.ImageField(required=False)
-    staff_number = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=20, required=True)
+   
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'first_name','middle_name' ,'last_name',
+                 'password1', 'password2']
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_principal = True
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        user.middle_name = self.cleaned_data.get('middle_name')
+        user.save()
+        principal = Principal.objects.create(user=user)
+        principal.save()
+        return user
+
+
+class PrincipalUpdateForm(forms.ModelForm):
 
     class Meta:
+        model = User
+        fields = ['username', 'first_name', 'middle_name','last_name']
+
+
+class PrincipalProfileUpdateForm(forms.ModelForm):
+    class Meta:
         model = Principal
-        fields = ('user_id', 'first_name', 'middle_name',
-                  'last_name', 'staff_number','profile_photo',)
+        fields = ['staff_number', 'profile_photo']
+
+
+
+class TeacherSignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=20, required=True)
+    middle_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=20, required=True)
+   
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'first_name','middle_name' ,'last_name',
+                 'password1', 'password2']
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_teacher = True
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        user.middle_name = self.cleaned_data.get('middle_name')
+        user.save()
+        teacher = Teacher.objects.create(user=user)
+        teacher.save()
+        return user
+
+
+class TeacherUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'middle_name','last_name']
+
+
+class TeacherProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['staff_number', 'profile_photo']
+
+
+
+class StudentSignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=20, required=True)
+    middle_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=20, required=True)
+   
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'first_name','middle_name' ,'last_name',
+                 'password1', 'password2']
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_student = True
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        user.middle_name = self.cleaned_data.get('middle_name')
+        user.save()
+        student = Student.objects.create(user=user)
+        student.save()
+        return user
+
+
+class StudentUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'middle_name','last_name']
+
+
+class StudentProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['reg_number', 'profile_photo','classes','subjects','hse']
+
+
+
+# class AdminUpdateForm(forms.ModelForm):
+
+#     class Meta:
+#         model = User
+#         fields = ['username', 'first_name', 'last_name', 'email']
+
+# class CustomUserForm(UserCreationForm):
+#     class Meta:
+#         model = User
+#         fields = ('user_type','username', 'password1', 'password2',)
+
+
+# class PrincipalRegistrationForm(forms.Form):
+#     user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+#     first_name = forms.CharField(max_length=100, required=True)
+#     middle_name = forms.CharField(max_length=100, required=True)
+#     last_name = forms.CharField(max_length=100, required=True)
+#     profile_photo = forms.ImageField(required=False)
+#     staff_number = forms.CharField(max_length=100, required=True)
+
+#     class Meta:
+#         model = Principal
+#         fields = ('user_id', 'first_name', 'middle_name',
+#                   'last_name', 'staff_number','profile_photo',)
 
 
 

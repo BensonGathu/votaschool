@@ -1,120 +1,262 @@
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render,redirect,get_object_or_404
 from. forms import *
 from .models import *
 from django.views.generic.edit import FormView
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 def home(request):
       return render(request,'../templates/hod/hod.html')
+
+def principal_registration(request):
+    if request.method == 'POST':
+        form = PrincipalSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            first_name = form.cleaned_data.get('first_name')
+            messages.success(
+                request, first_name + ' ' + 'your account was created successfully!')
+            new_principal = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            return redirect('profile',new_principal.id)
+    else:
+        form = PrincipalSignUpForm(request.POST)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'auth/principalregistration.html', context)
+
+
+def teacher_registration(request):
+    if request.method == 'POST':
+        form = TeacherSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            first_name = form.cleaned_data.get('first_name')
+            messages.success(
+                request, first_name + ' ' + 'your account was created successfully!')
+            new_teacher = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            return redirect('profile',new_teacher.id)
+            
+    else:
+        form = TeacherSignUpForm(request.POST)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'auth/teacherregistration.html', context)
+
+
+def student_registration(request):
+    if request.method == 'POST':
+        form = StudentSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            first_name = form.cleaned_data.get('first_name')
+            messages.success(
+                request, first_name + ' ' + 'your account was created successfully!')
+            return redirect('profile',request.id)
+    else:
+        form = StudentSignUpForm(request.POST)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'auth/studentregistration.html', context)
+
+
+
+# @unauthenticated_user
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username,
+                            password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Logged in as' + ' ' + username)
+            if user.is_principal:
+                return redirect('home')
+            if user.is_teacher:
+                return redirect('home')
+            if user.is_student:
+                return redirect('home')
+        else:
+            messages.error(request, 'Invalid Username and/or Password')
+
+    context = {}
+    return render(request, 'auth/login.html', context)
+
+
+def logoutUser(request):
+    current_user = request.user
+    logout(request)
+    messages.info(
+        request, 'You have logged out. Log back in to book our services.')
+    # if current_user.is_admin:
+    #     return redirect('home')
+    return redirect('login')
+
+
+@login_required
+def profile(request,id):
+    current_user = get_object_or_404(User,pk=id)
+    if current_user.is_principal:
+        if request.method == 'POST':
+            u_form = PrincipalUpdateForm(
+                request.POST, instance=request.user)
+            p_form = PrincipalProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user.principal)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+                return redirect('login')
+        else:
+            u_form = PrincipalUpdateForm(instance=request.user)
+            p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/principalprofile.html', context)
+
+    if current_user.is_teacher:
+        if request.method == 'POST':
+            u_form = TeacherUpdateForm(
+                request.POST, instance=request.user)
+            p_form = TeacherProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+                return redirect('home')
+        else:
+            u_form = TeacherUpdateForm(instance=request.user)
+            p_form = TeacherProfileUpdateForm(
+                instance=request.user)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/teacherprofile.html', context)
+
+            
+
+            
 # def register(request):
 #     return render(request,'../templates/auth/register.html')
 
-class UserCreateView(FormView):
-    form_class = CustomUserForm
-    template_name = '../templates/auth/register.html'
+# class UserCreateView(FormView):
+#     form_class = CustomUserForm
+#     template_name = '../templates/auth/register.html'
 
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        user = form.save()
-        if user.user_type == "student":
-            return redirect(f'/create-student/{user.id}')
-        elif user.user_type == "principal":
-            return redirect(f'/create-principal/{user.id}')
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         user = form.save()
+#         if user.user_type == "student":
+#             return redirect(f'/create-student/{user.id}')
+#         elif user.user_type == "principal":
+#             return redirect(f'/create-principal/{user.id}')
         
-        elif user.user_type == "teacher":
-            return redirect(f'/create-teacher/{user.id}')
+#         elif user.user_type == "teacher":
+#             return redirect(f'/create-teacher/{user.id}')
         
 
 
-    def get_context_data(self, **kwargs):
-        context = super(UserCreateView, self).get_context_data(**kwargs)
-        context.update({
-            'user_create': True,
-            'student_create': False,
-            'teacher_create': True
-        })
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super(UserCreateView, self).get_context_data(**kwargs)
+#         context.update({
+#             'user_create': True,
+#             'student_create': False,
+#             'teacher_create': True
+#         })
+#         return context
 
 
 
 
-class PrincipalView(FormView):
-    form_class = PrincipalRegistrationForm
-    template_name =  '../templates/auth/headregister.html'
+# class PrincipalView(FormView):
+#     form_class = PrincipalRegistrationForm
+#     template_name =  '../templates/auth/headregister.html'
 
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        # form.user_id = self.kwargs['_id']
-        user = User.objects.get(id=self.kwargs['id'])
-        principal = Principal.objects.create(user=user)
-        principal.save()
-        print(principal)
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         # form.user_id = self.kwargs['_id']
+#         user = User.objects.get(id=self.kwargs['id'])
+#         principal = Principal.objects.create(user=user)
+#         principal.save()
+#         print(principal)
+#         return super().form_valid(form)
  
 
-    def get_context_data(self, **kwargs):
-        context = super(PrincipalView, self).get_context_data(**kwargs)
-        context.update({
-            'user_create': False,
-            'student_create': True
-        })
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super(PrincipalView, self).get_context_data(**kwargs)
+#         context.update({
+#             'user_create': False,
+#             'student_create': True
+#         })
+#         return context
 
-class TeacherView(FormView):
-    form_class = TeacherRegisterForm
-    template_name = '../templates/auth/teacherregister.html'
+# class TeacherView(FormView):
+#     form_class = TeacherRegisterForm
+#     template_name = '../templates/auth/teacherregister.html'
 
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        # form.user_id = self.kwargs['_id']
-        user = User.objects.get(id=self.kwargs['id'])
-        teacher = Teacher.objects.create(user=user)
-        # staff_number=form['staff_number'],
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         # form.user_id = self.kwargs['_id']
+#         user = User.objects.get(id=self.kwargs['id'])
+#         teacher = Teacher.objects.create(user=user)
+#         teacher.save()
+#         return super().form_valid(form)
 
-        teacher.save()
-        # staff_number.save
-        return super().form_valid(form)
-        return redirect("home")
-
-    def get_context_data(self, **kwargs):
-        context = super(TeacherView, self).get_context_data(**kwargs)
-        context.update({
-            'user_create': False,
-            'student_create': True
-        })
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super(TeacherView, self).get_context_data(**kwargs)
+#         context.update({
+#             'user_create': False,
+#             'student_create': True
+#         })
+#         return context
 
 
 
-class StudentView(FormView):
-    model = User
-    form_class = StudentRegisterForm
-    template_name = '../templates/auth/studentregister.html'
+# class StudentView(FormView):
+#     form_class = StudentRegisterForm
+#     template_name = '../templates/auth/studentregister.html'
   
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        # form.user_id = self.kwargs['_id']
-        user = User.objects.get(id=self.kwargs['id'])
-        student = Student.objects.create(user=user)
-        student.save()
-        return super().form_valid(form)
-        return redirect("home")
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         # form.user_id = self.kwargs['_id']
+#         user = User.objects.get(id=self.kwargs['id'])
+#         student = Student.objects.create(user=user)
+#         student.save()
+#         return super().form_valid(form)
+#         return redirect("home")
 
-    def get_context_data(self, **kwargs):
-        context = super(StudentView, self).get_context_data(**kwargs)
-        context.update({
-            'user_create': False,
-            'student_create': True
-        })
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super(StudentView, self).get_context_data(**kwargs)
+#         context.update({
+#             'user_create': False,
+#             'student_create': True
+#         })
+#         return context
 def load_subjects(request):
     class_id = request.GET.get('classes_id')
     subjects = Subjects.objects.filter(classes_id=class_id)
