@@ -38,7 +38,7 @@ class TeacherRegisterForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True)
     middle_name = forms.CharField(max_length=100, required=True)
     last_name = forms.CharField(max_length=100, required=True)
-    staff_number = forms.CharField(max_length=100, required=True)
+    # staff_number = forms.CharField(max_length=100, required=True)
     subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
 
     profile_photo = forms.ImageField(required=False)
@@ -70,12 +70,12 @@ class StudentRegisterForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['subjects'].queryset = Subjects.objects.none()
 
-        # if 'classes' in self.data:
-        #     try:
-        #         classes_id = int(self.data.get('classes'))
-        #         self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=classes_id).order_by('name')
-        #     except (ValueError, TypeError):
-                #pass  # invalid input from the client; ignore and fallback to empty City queryset
+        if 'classes' in self.data:
+            try:
+                classes_id = int(self.data.get('classes'))
+                self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=classes_id).order_by('name')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
         # elif self.instance.pk:
         #     self.fields['subjects'].queryset = self.instance.classes.subject_set.order_by('name')
 

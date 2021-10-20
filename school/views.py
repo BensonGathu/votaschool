@@ -54,7 +54,9 @@ class PrincipalView(FormView):
         user = User.objects.get(id=self.kwargs['id'])
         principal = Principal.objects.create(user=user)
         principal.save()
+        print(principal)
         return super().form_valid(form)
+ 
 
     def get_context_data(self, **kwargs):
         context = super(PrincipalView, self).get_context_data(**kwargs)
@@ -74,8 +76,12 @@ class TeacherView(FormView):
         # form.user_id = self.kwargs['_id']
         user = User.objects.get(id=self.kwargs['id'])
         teacher = Teacher.objects.create(user=user)
+        # staff_number=form['staff_number'],
+
         teacher.save()
+        # staff_number.save
         return super().form_valid(form)
+        return redirect("home")
 
     def get_context_data(self, **kwargs):
         context = super(TeacherView, self).get_context_data(**kwargs)
@@ -99,7 +105,6 @@ class StudentView(FormView):
         user = User.objects.get(id=self.kwargs['id'])
         student = Student.objects.create(user=user)
         student.save()
-        print("sses",student.classes)
         return super().form_valid(form)
         return redirect("home")
 
@@ -218,8 +223,42 @@ def addresults(request):
     form = addResultsForm()
     return render(request,"results.html",{"teacher":teacher,"subjects":subjects,"form":form})
 
+
+def teacher(request):
+    teacher = Teacher.objects.get(user_id=request.user)
+    subjects = Subjects.objects.filter(teacher=request.user.id)
+    return render(request,"teacher/teacher.html",)
+
+def Students(request,id):
+    subject = get_object_or_404(Subjects,pk=id)
+    
+
+    all_students = subject.students.all()
+    request.session['current_class_id'] = id
+
+    # students = Student.objects.filter(subjects_id=subject)
+    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students,})
+
 def addmarks(request,id):
-    pass
+    student = get_object_or_404(Student,pk=id)
+    subjectid = request.session.get('current_class_id')
+    subject = get_object_or_404(Subjects,pk=subjectid)
+    print(subject)
+    marks = addResultsForm()
+    if request.method == 'POST':
+        form = addResultsForm(request.POST)
+        if form.is_valid():
+            marks = form.save(commit=False)
+            marks.student = student
+            marks.subjects = subject
+            marks.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addResultsForm()  
+    return render(request,"teacher/marks.html",{"form":form,"subject":subject})   
+
+
+
     
-    
+
 

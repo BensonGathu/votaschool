@@ -2,11 +2,14 @@
 {% for subject in subjects %}
     <h4>Subject: {{subject.name}}</h4>
     <h5>Class: {{subject.classes}}</h5>
-    <h5> students: {{subject.students.all}}</h5>
+    <h5>ID: {{subject.id}}</h5>
+    <a href="{%url 'students' subject.id%}" class="btn btn-primary">Students</a>
+    
     
 {%endfor%}
-{{subjects}}
 
-{{form}}
-<button class="btn btn-sm btn-outline-success" type="button"><a style="color: white;" class="dropdown-item" href="{% url 'addresults'%}">Subjects</a></button>
+ 
+
+<!-- {{form}}
+<button class="btn btn-sm btn-outline-success" type="button"><a style="color: white;" class="dropdown-item" href="{% url 'addresults'%}">Subjects</a></button> -->
 

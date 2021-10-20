@@ -22,6 +22,10 @@ urlpatterns =[
     path("create-teacher/<int:id>/",views.TeacherView.as_view(),name="create-teacher"),
     path("create-principal/<int:id>/",views.PrincipalView.as_view(),name="create-principal"),
     path("ajax/load-subjects/",views.load_subjects,name='ajax_load_subjects'),
+    path("teacher",views.teacher,name="teacher"),
+    path("students/<int:id>",views.Students,name="students"),
+    path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
+
 
 ]
 

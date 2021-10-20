@@ -82,7 +82,7 @@ class Classes(models.Model):
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
-    staff_number = models.CharField(max_length=2000,unique=True)
+    # staff_number = models.CharField(max_length=2000,unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.user.username
@@ -176,6 +176,7 @@ class Results(models.Model):
         return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
     class Meta:
         unique_together=("student", "subjects")
+        
 class report(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     all_subjects = models.ManyToManyField(Results)
