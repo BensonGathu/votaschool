@@ -103,7 +103,7 @@ class Classes(models.Model):
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
-    staff_number = models.CharField(max_length=2000,unique=True)
+    staff_number = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -169,9 +169,9 @@ class Subjects(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
-    classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students")
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students",blank=True,null=True)
     subjects = models.ManyToManyField(Subjects,related_name="students")
-    reg_number = models.CharField(max_length=2000,unique=True)
+    reg_number = models.CharField(max_length=2000)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
 

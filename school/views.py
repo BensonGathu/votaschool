@@ -21,7 +21,10 @@ def principal_registration(request):
             first_name = form.cleaned_data.get('first_name')
             messages.success(
                 request, first_name + ' ' + 'your account was created successfully!')
-            return redirect('profile')
+            new_principal = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            return redirect('profile',new_principal.id)
     else:
         form = PrincipalSignUpForm(request.POST)
 
@@ -39,7 +42,11 @@ def teacher_registration(request):
             first_name = form.cleaned_data.get('first_name')
             messages.success(
                 request, first_name + ' ' + 'your account was created successfully!')
-            return redirect('profile')
+            new_teacher = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            return redirect('profile',new_teacher.id)
+            
     else:
         form = TeacherSignUpForm(request.POST)
 
@@ -57,7 +64,7 @@ def student_registration(request):
             first_name = form.cleaned_data.get('first_name')
             messages.success(
                 request, first_name + ' ' + 'your account was created successfully!')
-            return redirect('profile')
+            return redirect('profile',request.id)
     else:
         form = StudentSignUpForm(request.POST)
 
@@ -102,44 +109,50 @@ def logoutUser(request):
 
 
 @login_required
-def profile(request):
-    current_user = request.user
+def profile(request,id):
+    current_user = get_object_or_404(User,pk=id)
     if current_user.is_principal:
         if request.method == 'POST':
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
-            c_form = PrincipalProfileUpdateForm(
+            p_form = PrincipalProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.principal)
-            if u_form.is_valid() and c_form.is_valid():
+            if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
-                c_form.save()
+                p_form.save()
                 messages.success(request, f'Your account has been updated!')
                 return redirect('login')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
-            c_form = PrincipalProfileUpdateForm(instance=request.user.principal)
+            p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
 
             context = {'u_form': u_form,
-                    'c_form': c_form,
+                    'p_form': p_form,
                     'current_user': current_user,
                     }
             return render(request, 'auth/principalprofile.html', context)
 
-    # if current_user.is_admin:
-    #     if request.method == 'POST':
-    #         u_form = AdminUpdateForm(
-    #             request.POST, instance=request.user)
-    #         c_form = AdminProfileUpdateForm(
-    #             request.POST, request.FILES, instance=request.user.admin_user)
-    #         if u_form.is_valid() and c_form.is_valid():
-    #             u_form.save()
-    #             c_form.save()
-    #             messages.success(request, f'Your account has been updated!')
-    #             return redirect('profile')
-    #     else:
-    #         u_form = AdminUpdateForm(instance=request.user)
-    #         c_form = AdminProfileUpdateForm(
-    #             instance=request.user.admin_user)
+    if current_user.is_teacher:
+        if request.method == 'POST':
+            u_form = TeacherUpdateForm(
+                request.POST, instance=request.user)
+            p_form = TeacherProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+                return redirect('home')
+        else:
+            u_form = TeacherUpdateForm(instance=request.user)
+            p_form = TeacherProfileUpdateForm(
+                instance=request.user)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/teacherprofile.html', context)
 
             
 

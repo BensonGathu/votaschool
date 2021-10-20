@@ -12,45 +12,45 @@
 
             <div class="text-center">
                 <legend>
-                    <h3>Update Principal</h3>
+                    <h3>Update Teacher</h3>
                 </legend>
                 <hr>
                 <div class="register-form">
                     <form class="user" action="" method="POST">
                         {% csrf_token %}
                         <div class="form-group">
-                            {{ u_form.username|as_crispy_field }}
+                            {{ form.username|crispy }}
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-4 mb-3 mb-sm-0">
-                                {{ u_form.first_name|as_crispy_field }}
+                                {{ u_form.first_name|crispy }}
                             </div>
                             <div class="col-sm-4">
-                                {{ u_form.middle_name|as_crispy_field }}
+                                {{ u_form.middle_name|crispy  }}
                             </div>
                             <div class="col-sm-4">
-                                {{ u_form.last_name|as_crispy_field }}
+                                {{ u_form.last_name|crispy }}
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                {{ p_form.staff_number|as_crispy_field }}
+                                {{ p_form.staff_number|crispy  }}
                             </div>
                             <div class="col-sm-6">
-                                {{ p_form.profile_photo|as_crispy_field }}
+                                {{ p_form.profile_photo|crispy  }}
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                {{ u_form.password1| as_crispy_field }}
+                                {{ u_form.password1|crispy }}
                             </div>
                             <div class="col-sm-6">
-                                {{ u_form.password2|as_crispy_field }}
+                                {{ u_form.password2 |crispy }}
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-user btn-block"> Update
-                            Principal</button>
+                            </button>
 
                     </form>
                     <br>

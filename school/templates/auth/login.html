@@ -1,4 +1,4 @@
-{% extends 'auth/layout.html' %}
+{% extends 'auth/authbase.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -39,9 +39,7 @@
                             <button type="submit" id="btn" class="btn btn-success btn-block">Login</button>
                     </form>
                     <br>
-                    <div id="p" class="text-center">
-                        <!-- <a class="small" href="{% url 'password_reset' %}">Forgot Password?</a> -->
-                    </div>
+                   
                    
                 </div>
             </div>
