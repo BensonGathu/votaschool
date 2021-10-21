@@ -116,7 +116,7 @@ def profile(request,id):
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
             p_form = PrincipalProfileUpdateForm(
-                request.POST, request.FILES, instance=request.user.principal)
+                request.POST, request.FILES, instance=request.user)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -124,7 +124,7 @@ def profile(request,id):
                 return redirect('login')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
-            p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
+            p_form = PrincipalProfileUpdateForm(instance=request.user)
 
             context = {'u_form': u_form,
                     'p_form': p_form,
