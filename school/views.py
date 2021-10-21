@@ -30,6 +30,7 @@ def principal_registration(request):
 
     context = {
         'form': form
+        
     }
     return render(request, 'auth/principalregistration.html', context)
 
@@ -120,12 +121,15 @@ def profile(request,id):
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
+                print(p_form.staff_number)
+                print("saved")
                 messages.success(request, f'Your account has been updated!')
-                return redirect('login')
+                print("saved")
+            return redirect('home')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
             p_form = PrincipalProfileUpdateForm(instance=request.user)
-
+            print("not saved")
             context = {'u_form': u_form,
                     'p_form': p_form,
                     'current_user': current_user,
@@ -373,19 +377,22 @@ def teacher(request):
 
 def Students(request,id):
     subject = get_object_or_404(Subjects,pk=id)
+    student_id = request.session.get('student_id')
     
-
     all_students = subject.students.all()
-    request.session['current_class_id'] = id
+    marks = Results.objects.filter(subjects_id=subject,student=student_id)
+        
 
+    request.session['current_class_id'] = id
+    exam1 = Results.get_results(id)
     # students = Student.objects.filter(subjects_id=subject)
-    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students,})
+    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students, "exam1": exam1,"marks":marks})
 
 def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
     subject = get_object_or_404(Subjects,pk=subjectid)
-    print(subject)
+    student_id = request.session["student_id"] = id
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST)
@@ -397,7 +404,8 @@ def addmarks(request,id):
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
-    return render(request,"teacher/marks.html",{"form":form,"subject":subject})   
+    return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+
 
 
 

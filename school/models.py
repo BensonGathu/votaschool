@@ -147,6 +147,7 @@ subject_names = (
     ("Agriculture", "Agriculture"),
     ("Business Studies", "Business Studies"),
     )
+
 class Subjects(models.Model):
     name = models.CharField(choices=subject_names,max_length=2000)
     classes = models.ForeignKey(Classes,related_name="subjects",on_delete=models.CASCADE)
@@ -210,10 +211,15 @@ class Results(models.Model):
     exam2 = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(30),MinValueValidator(0)])
     endterm = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(70),MinValueValidator(0)])
     date_created = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
     class Meta:
         unique_together=("student", "subjects")
+
+    @classmethod
+    def get_results(cls,student_id):
+        return cls.objects.filter(subjects__pk=student_id).all()
         
 class report(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
@@ -229,11 +235,13 @@ class report(models.Model):
         pass
     def __str__(self):
         return str(self.mean())
+
 class Fees(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     amount_payable = models.FloatField()
     amount_paid  = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
+
     def get_balance(self):
         return str(self.amount_payable - self.amount_paid)
     def __str__(self):
