@@ -157,7 +157,7 @@ class TeacherRegisterForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True)
     middle_name = forms.CharField(max_length=100, required=True)
     last_name = forms.CharField(max_length=100, required=True)
-    staff_number = forms.CharField(max_length=100, required=True)
+    # staff_number = forms.CharField(max_length=100, required=True)
     subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
 
     profile_photo = forms.ImageField(required=False)
