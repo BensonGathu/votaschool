@@ -211,10 +211,15 @@ class Results(models.Model):
     exam2 = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(30),MinValueValidator(0)])
     endterm = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(70),MinValueValidator(0)])
     date_created = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
     class Meta:
         unique_together=("student", "subjects")
+
+    @classmethod
+    def get_results(cls,student_id):
+        return cls.objects.filter(subjects__pk=student_id).all()
         
 class report(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
@@ -236,6 +241,7 @@ class Fees(models.Model):
     amount_payable = models.FloatField()
     amount_paid  = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
+
     def get_balance(self):
         return str(self.amount_payable - self.amount_paid)
     def __str__(self):

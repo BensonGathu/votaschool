@@ -30,6 +30,7 @@ def principal_registration(request):
 
     context = {
         'form': form
+        
     }
     return render(request, 'auth/principalregistration.html', context)
 
@@ -116,15 +117,17 @@ def profile(request,id):
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
             p_form = PrincipalProfileUpdateForm(
-                request.POST, request.FILES, instance=request.user.principal)
+                request.POST, request.FILES, instance=request.user)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
+                print(p_form.staff_number)
+                print("saved")
                 messages.success(request, f'Your account has been updated!')
-                return redirect('login')
+            return redirect('login')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
-            p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
+            p_form = PrincipalProfileUpdateForm(instance=request.user)
 
             context = {'u_form': u_form,
                     'p_form': p_form,
@@ -377,9 +380,9 @@ def Students(request,id):
 
     all_students = subject.students.all()
     request.session['current_class_id'] = id
-
+    exam1 = Results.get_results(id)
     # students = Student.objects.filter(subjects_id=subject)
-    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students,})
+    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students, "exam1": exam1})
 
 def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
