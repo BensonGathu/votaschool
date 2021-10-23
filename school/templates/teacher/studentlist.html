@@ -22,6 +22,7 @@
 
                 </tr>
               </thead>
+             
               {% for students in all_students%}
               <tbody>
                   <tr>
@@ -29,9 +30,11 @@
                       <td>{{students.user.first_name}}</td>
                       <td>{{students.user.middle_name}}</td>
                       <td>{{students.user.last_name}}</td>
-                      <td> - </td>
-                      <td> - </td>
-                      <td> - </td>
+                      {% for mark in marks %}
+                      <td> {{mark.exam1}} </td>
+                      <td> {{mark.exam2}} </td>
+                      <td> {{mark.endterm}} </td>
+                      {% endfor%}
                       <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></td>
                       <td><a href="" class="btn btn-primary">edit Marks</a></td>
                   </tr>
