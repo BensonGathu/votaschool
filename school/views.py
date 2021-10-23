@@ -21,10 +21,10 @@ def principal_registration(request):
             first_name = form.cleaned_data.get('first_name')
             messages.success(
                 request, first_name + ' ' + 'your account was created successfully!')
-            new_principal = authenticate(username=form.cleaned_data['username'],
+            authenticate(username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password1'],
                                     )
-            return redirect('profile',new_principal.id)
+            return redirect('profile')
     else:
         form = PrincipalSignUpForm(request.POST)
 
@@ -46,7 +46,7 @@ def teacher_registration(request):
             new_teacher = authenticate(username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password1'],
                                     )
-            return redirect('profile',new_teacher.id)
+            return redirect('profile')
             
     else:
         form = TeacherSignUpForm(request.POST)
@@ -110,14 +110,14 @@ def logoutUser(request):
 
 
 @login_required
-def profile(request,id):
-    current_user = get_object_or_404(User,pk=id)
+def profile(request):
+    current_user = request.user
     if current_user.is_principal:
         if request.method == 'POST':
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
             p_form = PrincipalProfileUpdateForm(
-                request.POST, request.FILES, instance=request.user)
+                request.POST, request.FILES, instance=request.user.principal)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -128,7 +128,7 @@ def profile(request,id):
             return redirect('home')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
-            p_form = PrincipalProfileUpdateForm(instance=request.user)
+            p_form = PrincipalProfileUpdateForm(instance=request.user.profile)
             print("not saved")
             context = {'u_form': u_form,
                     'p_form': p_form,
@@ -141,16 +141,16 @@ def profile(request,id):
             u_form = TeacherUpdateForm(
                 request.POST, instance=request.user)
             p_form = TeacherProfileUpdateForm(
-                request.POST, request.FILES, instance=request.user)
+                request.POST, request.FILES, instance=request.user.teacher)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
-                return redirect('home')
+            return redirect('home')
         else:
             u_form = TeacherUpdateForm(instance=request.user)
             p_form = TeacherProfileUpdateForm(
-                instance=request.user)
+                instance=request.user.teacher)
 
             context = {'u_form': u_form,
                     'p_form': p_form,
@@ -380,13 +380,18 @@ def Students(request,id):
     student_id = request.session.get('student_id')
     
     all_students = subject.students.all()
-    marks = Results.objects.filter(subjects_id=subject,student=student_id)
-        
+    marks = Results.objects.filter(subjects_id=id,student_id=student_id)
 
+   
     request.session['current_class_id'] = id
     exam1 = Results.get_results(id)
     # students = Student.objects.filter(subjects_id=subject)
-    return render(request,"teacher/studentlist.html",{"subject":subject,"all_students":all_students, "exam1": exam1,"marks":marks})
+    context = {"subject":subject,
+                "all_students":all_students,
+                "exam1": exam1,
+                "marks":marks}
+
+    return render(request,"teacher/studentlist.html",context)
 
 def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
@@ -405,6 +410,9 @@ def addmarks(request,id):
     else:
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+
+
+
 
 
 
