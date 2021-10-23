@@ -218,8 +218,8 @@ class Results(models.Model):
         unique_together=("student", "subjects")
 
     @classmethod
-    def get_results(cls,student_id):
-        return cls.objects.filter(subjects__pk=student_id).all()
+    def get_results(cls,subject_id):
+        return cls.objects.filter(subjects__pk=subject_id).all()
         
 class report(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
