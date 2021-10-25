@@ -125,7 +125,7 @@ class StudentProfileUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['subjects'].queryset = Subjects.objects.all()
+        self.fields['subjects'].queryset = Subjects.objects.none()
 
         if 'classes' in self.data:
             try:

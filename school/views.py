@@ -286,7 +286,9 @@ def profile(request):
 #         return context
 def load_subjects(request):
     class_id = request.GET.get('classes_id')
+    print(class_id)
     subjects = Subjects.objects.filter(classes_id=class_id)
+    print(subjects)
     return render(request,'../templates/loadsubjects.html',{"subjects":subjects})
 
 # class registerteacher(CreateView):
@@ -400,11 +402,9 @@ def teacher(request):
 
 def Students(request,id):
     subject = get_object_or_404(Subjects,pk=id)
-    student_id = request.session.get('student_id')
+
 
     all_students = subject.students.all()
-    marks = Results.objects.filter(subjects_id=id,student_id=student_id).filter(subjects__teacher=request.user.id)
-
    
     request.session['current_class_id'] = id
     exam1 = Results.get_results(id)
@@ -412,7 +412,7 @@ def Students(request,id):
     context = {"subject":subject,
                 "all_students":all_students,
                 "exam1": exam1,
-                "marks":marks}
+                }
 
     return render(request,"teacher/studentlist.html",context)
 
@@ -420,7 +420,7 @@ def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
     subject = get_object_or_404(Subjects,pk=subjectid)
-    request.session["student_id"] = id
+    current_class = subject.classes
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST)
@@ -428,6 +428,7 @@ def addmarks(request,id):
             marks = form.save(commit=False)
             marks.student = student
             marks.subjects = subject
+            marks.classes = current_class
             marks.save()
         return HttpResponseRedirect(request.path_info) 
     else:
@@ -443,9 +444,9 @@ def studentInfo(request):
     subjects = current_student.subjects.all
     reg_number = current_student.reg_number
     house = current_student.hse
-
+ 
     marks = Results.objects.filter(student_id=current_student)
-    
+   
     
     context = {
         "current_student":current_student,
@@ -454,6 +455,7 @@ def studentInfo(request):
         "reg_number":reg_number,
         "house": house,
         "marks": marks,
+        
         
     }
 

@@ -1,16 +1,12 @@
 from django import template
 
 from school.views import teacher
-from ..models import *
+from school.models import Results
 
 register = template.Library()
 
 
-
-
 @register.simple_tag
-def student_marks(a, b, *args, **kwargs):
-    student_id = kwargs['student_id']
-    subject_id = kwargs['subject_id']
+def student_marks(subject_id,student_id):
     
-    return Results.objects.filter(subjects_id=subject_id,student_id=student_id)
+    return Results.objects.filter(student=student_id,subjects=subject_id)

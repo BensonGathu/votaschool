@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load mymarks %}
 {% load bootstrap5 %}
 {% load django_bootstrap5 %}
 
@@ -30,16 +30,18 @@
                       <td>{{students.user.first_name}}</td>
                       <td>{{students.user.middle_name}}</td>
                       <td>{{students.user.last_name}}</td>
-                      {% for mark in marks %}
+                      {% student_marks  subject.id students.user.id as marks_students %}
+                      {% for mark in marks_students %}
                       <td> {{mark.exam1}} </td>
                       <td> {{mark.exam2}} </td>
                       <td> {{mark.endterm}} </td>
-                  
+   
                       {% endfor%}
-
+                     
                       <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></td>
                       <td><a href="" class="btn btn-primary">edit Marks</a></td>
                   </tr>
+               
                   {% endfor%}
               </tbody>
         </table>

@@ -205,6 +205,7 @@ class Student(models.Model):
         return cls.objects.filter(reg_number=reg_number).user
         
 class Results(models.Model):
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
     student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="student_results")
     subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name="results")
     exam1 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
@@ -218,6 +219,8 @@ class Results(models.Model):
   
     class Meta:
         unique_together=("student", "subjects")
+
+
 
     @property
     def mean_marks(self):
