@@ -11,7 +11,7 @@ urlpatterns =[
     path('registerprincipal/',views.principal_registration,name="registerprincipal"),
     path('registerteacher/',views.teacher_registration,name="registerteacher"),
      path('registerstudent/',views.student_registration,name="registerstudent"),
-    path('profile/<int:id>/',views.profile,name="profile"),
+    path('profile/',views.profile,name="profile"),
     path('accounts/login/',views.loginPage,name="login"),
     path('logout/', views.logoutUser, name='logout'),
     path('allstudents',views.allstudents,name="allstudents"),  
@@ -30,6 +30,7 @@ urlpatterns =[
     path("teacher",views.teacher,name="teacher"),
     path("students/<int:id>",views.Students,name="students"),
     path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
+
 
 
 ]
