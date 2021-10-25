@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 from django.shortcuts import render,redirect,get_object_or_404
 from. forms import *
 from .models import *
@@ -65,7 +66,9 @@ def student_registration(request):
             first_name = form.cleaned_data.get('first_name')
             messages.success(
                 request, first_name + ' ' + 'your account was created successfully!')
-            return redirect('profile',request.id)
+            
+            login(request, user)
+            return redirect('profile')
     else:
         form = StudentSignUpForm(request.POST)
 
@@ -121,15 +124,12 @@ def profile(request):
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
-                print(p_form.staff_number)
-                print("saved")
                 messages.success(request, f'Your account has been updated!')
-                print("saved")
             return redirect('home')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
-            p_form = PrincipalProfileUpdateForm(instance=request.user.profile)
-            print("not saved")
+            p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
+            
             context = {'u_form': u_form,
                     'p_form': p_form,
                     'current_user': current_user,
@@ -146,6 +146,7 @@ def profile(request):
                 u_form.save()
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
+            
             return redirect('home')
         else:
             u_form = TeacherUpdateForm(instance=request.user)
@@ -158,8 +159,30 @@ def profile(request):
                     }
             return render(request, 'auth/teacherprofile.html', context)
 
-            
 
+    if current_user.is_student:
+        if request.method == 'POST':
+            u_form = StudentUpdateForm(
+                request.POST, instance=request.user)
+            p_form = StudentProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user.student)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+            
+            return redirect('home')
+        else:
+            u_form = StudentUpdateForm(instance=request.user)
+            p_form = StudentProfileUpdateForm(
+                instance=request.user.student)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/studentprofile.html', context)
+  
             
 # def register(request):
 #     return render(request,'../templates/auth/register.html')
@@ -378,9 +401,9 @@ def teacher(request):
 def Students(request,id):
     subject = get_object_or_404(Subjects,pk=id)
     student_id = request.session.get('student_id')
-    
+
     all_students = subject.students.all()
-    marks = Results.objects.filter(subjects_id=id,student_id=student_id)
+    marks = Results.objects.filter(subjects_id=id,student_id=student_id).filter(subjects__teacher=request.user.id)
 
    
     request.session['current_class_id'] = id
@@ -397,7 +420,7 @@ def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
     subject = get_object_or_404(Subjects,pk=subjectid)
-    student_id = request.session["student_id"] = id
+    request.session["student_id"] = id
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST)
@@ -413,10 +436,30 @@ def addmarks(request,id):
 
 
 
+#students views
+def studentInfo(request):
+    current_student = Student.objects.get(user=request.user)
+    classes = current_student.classes
+    subjects = current_student.subjects.all
+    reg_number = current_student.reg_number
+    house = current_student.hse
 
+    marks = Results.objects.filter(student_id=current_student)
+    
+    
+    context = {
+        "current_student":current_student,
+        "classes":classes,
+        "subjects":subjects,
+        "reg_number":reg_number,
+        "house": house,
+        "marks": marks,
+        
+    }
 
+    
 
-
+    return render(request,"student/info.html",context)
     
 
 

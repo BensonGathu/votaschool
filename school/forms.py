@@ -123,6 +123,20 @@ class StudentProfileUpdateForm(forms.ModelForm):
         model = Student
         fields = ['reg_number', 'profile_photo','classes','subjects','hse']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['subjects'].queryset = Subjects.objects.all()
+
+        if 'classes' in self.data:
+            try:
+                classes_id = int(self.data.get('classes'))
+                self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=classes_id).order_by('name')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        # elif self.instance.pk:
+        #     self.fields['subjects'].queryset = self.instance.classes.subject_set.order_by('name')
+
+
 
 
 # class AdminUpdateForm(forms.ModelForm):

@@ -32,6 +32,9 @@ urlpatterns =[
     path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
 
 
+    #student urls
+    path("studentinfo/",views.studentInfo,name="studentinfo"),
+
 
 ]
 
