@@ -16,7 +16,20 @@
 {% endfor %}
 
 <br>
-
+<form class="navbar-form navbar-right-align" action="{% url 'studentinfo'%}" >
+  <select name = "location"class="form-control form-control-lg">
+      <option selected>Select Academic Year</option>
+      <option value = "{{subject__class}}">{{subjects.classes}}</option>
+      <option value = "Kiambu">Kiambu</option>
+      <option value = "Makueni">Makueni</option>
+      <!-- <option value = "BuruBuru">BuruBuru</option> -->
+      <option value = "Mombasa">Mombasa</option>
+      <option value = "Nairobi">Nairobi</option>
+      
+      
+  </select>
+  <input type="submit" value="Search" class="btn btn-default">
+</form> 
 <div class="card">
     <table class="table">
         <thead>
@@ -41,12 +54,13 @@
                 <td> {{mark.subjects.id}}  </td>
                 <td> {{mark.subjects.name}}  </td>
                   <td> {{mark.exam1}}  </td>
-                  <td> {{mark.exam1 }} </td>
+                  <td> {{mark.exam2 }} </td>
                   <td> {{mark.endterm}}  </td>
                   <td>  {{mark.mean_marks}} </td>
                   <td> {{mark.grade}}</td>
+
                 </tr>
-              
+                
                   {% endfor %} 
               
           </tbody>
