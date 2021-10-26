@@ -16,41 +16,19 @@
                 </legend>
                 <hr>
                 <div class="register-form">
-                    <form class="user" action="" method="POST">
+                    <form class="user" action="" method="POST" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
                         {% csrf_token %}
-                        <div class="form-group">
-                            {{ u_form.username|as_crispy_field }}
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-4 mb-3 mb-sm-0">
-                                {{ u_form.first_name|as_crispy_field }}
-                            </div>
-                            <div class="col-sm-4">
-                                {{ u_form.middle_name|as_crispy_field }}
-                            </div>
-                            <div class="col-sm-4">
-                                {{ u_form.last_name|as_crispy_field }}
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                {{ p_form.staff_number|as_crispy_field }}
-                            </div>
-                            <div class="col-sm-6">
-                                {{ p_form.profile_photo|as_crispy_field }}
-                            </div>
-                        </div>
-                      
+
+                       {% bootstrap_form u_form %}
+                       {% bootstrap_form  p_form %}
+
                         <button type="submit" class="btn btn-primary btn-user btn-block"> Update
                             Principal</button>
 
                     </form>
                     <br>
 
-                    <div class="text-center">
-                        <small class="text-muted" style="color: white;">Already have an account?</small> <a
-                            class="small" href="{% url 'login' %}"> Login!</a>
-                    </div>
+                    
                 </div>
 
             </div>

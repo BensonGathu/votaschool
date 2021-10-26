@@ -34,7 +34,9 @@
                       <td> {{mark.exam1}} </td>
                       <td> {{mark.exam2}} </td>
                       <td> {{mark.endterm}} </td>
+                  
                       {% endfor%}
+
                       <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></td>
                       <td><a href="" class="btn btn-primary">edit Marks</a></td>
                   </tr>

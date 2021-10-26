@@ -205,17 +205,31 @@ class Student(models.Model):
         return cls.objects.filter(reg_number=reg_number).user
         
 class Results(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE)
-    exam1 = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(30),MinValueValidator(0)])
-    exam2 = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(30),MinValueValidator(0)])
-    endterm = models.FloatField(blank=True,null=True,validators=[MaxValueValidator(70),MinValueValidator(0)])
+    student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="student_results")
+    subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name="results")
+    exam1 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
+    exam2 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
+    endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
     date_created = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
-        return "{} ={}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
+        if self.exam1 != None and self.exam2 != None and self.endterm != None:
+            return "{} = {}".format(self.subjects,(self.exam1 + self.exam2)/2 + self.endterm)
+  
     class Meta:
         unique_together=("student", "subjects")
+
+    @property
+    def mean_marks(self):
+        return (self.exam1 + self.exam2)/2 + self.endterm
+    
+    @property
+    def grade(self):
+        gde = (self.exam1 + self.exam2)/2 + self.endterm
+        if gde > 80:
+            return "A"
+        elif gde > 75:
+            return "B"
 
     @classmethod
     def get_results(cls,subject_id):
@@ -244,7 +258,9 @@ class Fees(models.Model):
 
     def get_balance(self):
         return str(self.amount_payable - self.amount_paid)
+
     def __str__(self):
         return self.get_balance()
+
     def savesfees(self):
         self.save()
