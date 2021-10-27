@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
+from django.db.models.query import InstanceCheckMeta
 from django.shortcuts import render,redirect,get_object_or_404
 from. forms import *
 from .models import *
@@ -11,8 +12,21 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-def home(request):
-      return render(request,'../templates/hod/hod.html')
+def hodhome(request):
+    total_students = Student.objects.all().count()
+    total_teachers = Teacher.objects.all().count()
+    context = {
+        'total_students': total_students,
+        'total_teachers': total_teachers
+        
+    }
+    return render(request,'../templates/hod/hod.html', context)
+
+def teachhome(request):
+    return render(request,'../templates/teacher/teacher.html')
+
+def studhome(request):
+    return render(request,'../templates/student/student.html')
 
 def principal_registration(request):
     if request.method == 'POST':
@@ -90,11 +104,11 @@ def loginPage(request):
             login(request, user)
             messages.success(request, 'Logged in as' + ' ' + username)
             if user.is_principal:
-                return redirect('home')
+                return redirect('hodhome')
             if user.is_teacher:
-                return redirect('home')
+                return redirect('teachhome')
             if user.is_student:
-                return redirect('home')
+                return redirect('studhome')
         else:
             messages.error(request, 'Invalid Username and/or Password')
 
@@ -116,7 +130,6 @@ def logoutUser(request):
 def profile(request):
     current_user = request.user
     if current_user.is_principal:
-
         if request.method == 'POST':
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
@@ -126,7 +139,7 @@ def profile(request):
                 u_form.save()
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
-            return redirect('home')
+            return redirect('hodhome')
         else:
             u_form = PrincipalUpdateForm(instance=request.user)
             p_form = PrincipalProfileUpdateForm(instance=request.user.principal)
@@ -151,7 +164,7 @@ def profile(request):
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
             
-            return redirect('home')
+            return redirect('teachhome')
         else:
             u_form = TeacherUpdateForm(instance=request.user)
             p_form = TeacherProfileUpdateForm(
@@ -175,7 +188,7 @@ def profile(request):
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
             
-            return redirect('home')
+            return redirect('studhome')
         else:
             u_form = StudentUpdateForm(instance=request.user)
             p_form = StudentProfileUpdateForm(
@@ -188,144 +201,15 @@ def profile(request):
             return render(request, 'auth/studentprofile.html', context)
   
             
-# def register(request):
-#     return render(request,'../templates/auth/register.html')
 
-# class UserCreateView(FormView):
-#     form_class = CustomUserForm
-#     template_name = '../templates/auth/register.html'
-
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         user = form.save()
-#         if user.user_type == "student":
-#             return redirect(f'/create-student/{user.id}')
-#         elif user.user_type == "principal":
-#             return redirect(f'/create-principal/{user.id}')
-        
-#         elif user.user_type == "teacher":
-#             return redirect(f'/create-teacher/{user.id}')
-        
-
-
-#     def get_context_data(self, **kwargs):
-#         context = super(UserCreateView, self).get_context_data(**kwargs)
-#         context.update({
-#             'user_create': True,
-#             'student_create': False,
-#             'teacher_create': True
-#         })
-#         return context
-
-
-
-
-# class PrincipalView(FormView):
-#     form_class = PrincipalRegistrationForm
-#     template_name =  '../templates/auth/headregister.html'
-
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         # form.user_id = self.kwargs['_id']
-#         user = User.objects.get(id=self.kwargs['id'])
-#         principal = Principal.objects.create(user=user)
-#         principal.save()
-#         print(principal)
-#         return super().form_valid(form)
- 
-
-#     def get_context_data(self, **kwargs):
-#         context = super(PrincipalView, self).get_context_data(**kwargs)
-#         context.update({
-#             'user_create': False,
-#             'student_create': True
-#         })
-#         return context
-
-# class TeacherView(FormView):
-#     form_class = TeacherRegisterForm
-#     template_name = '../templates/auth/teacherregister.html'
-
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         # form.user_id = self.kwargs['_id']
-#         user = User.objects.get(id=self.kwargs['id'])
-#         teacher = Teacher.objects.create(user=user)
-#         teacher.save()
-#         return super().form_valid(form)
-
-#     def get_context_data(self, **kwargs):
-#         context = super(TeacherView, self).get_context_data(**kwargs)
-#         context.update({
-#             'user_create': False,
-#             'student_create': True
-#         })
-#         return context
-
-
-
-# class StudentView(FormView):
-#     form_class = StudentRegisterForm
-#     template_name = '../templates/auth/studentregister.html'
-  
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         # form.user_id = self.kwargs['_id']
-#         user = User.objects.get(id=self.kwargs['id'])
-#         student = Student.objects.create(user=user)
-#         student.save()
-#         return super().form_valid(form)
-#         return redirect("home")
-
-#     def get_context_data(self, **kwargs):
-#         context = super(StudentView, self).get_context_data(**kwargs)
-#         context.update({
-#             'user_create': False,
-#             'student_create': True
-#         })
-#         return context
 def load_subjects(request):
     class_id = request.GET.get('classes_id')
+    print(class_id)
     subjects = Subjects.objects.filter(classes_id=class_id)
+    print(subjects)
     return render(request,'../templates/loadsubjects.html',{"subjects":subjects})
 
-# class registerteacher(CreateView):
-#     model = User
-#     form_class = TeacherRegisterForm
-#     template_name = '../templates/auth/teacherregister.html'
-    
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('/')
- 
 
-# class registerstudent(CreateView):
-#     model = User
-#     form_class = StudentRegisterForm
-#     template_name = '../templates/auth/studentregister.html'
-
-    
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('/')
-
-# class registerheadteacher(CreateView):
-#     model = User
-#     form_class = HeadTeacherRegisterForm
-#     template_name = '../templates/auth/headregister.html'
-
-   
-
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('/')
 
 
 def allstudents(request):
@@ -394,7 +278,7 @@ def addresults(request):
     teacher = Teacher.objects.get(user_id=request.user)
     subjects = Subjects.objects.filter(teacher=request.user.id)
     form = addResultsForm()
-    return render(request,"results.html",{"teacher":teacher,"subjects":subjects,"form":form})
+    return render(request,"teacher/results.html",{"teacher":teacher,"subjects":subjects,"form":form})
 
 
 def teacher(request):
@@ -404,11 +288,9 @@ def teacher(request):
 
 def Students(request,id):
     subject = get_object_or_404(Subjects,pk=id)
-    student_id = request.session.get('student_id')
+
 
     all_students = subject.students.all()
-    marks = Results.objects.filter(subjects_id=id,student_id=student_id).filter(subjects__teacher=request.user.id)
-
    
     request.session['current_class_id'] = id
     exam1 = Results.get_results(id)
@@ -416,7 +298,7 @@ def Students(request,id):
     context = {"subject":subject,
                 "all_students":all_students,
                 "exam1": exam1,
-                "marks":marks}
+                }
 
     return render(request,"teacher/studentlist.html",context)
 
@@ -424,7 +306,7 @@ def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
     subject = get_object_or_404(Subjects,pk=subjectid)
-    request.session["student_id"] = id
+    current_class = subject.classes
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST)
@@ -432,11 +314,31 @@ def addmarks(request,id):
             marks = form.save(commit=False)
             marks.student = student
             marks.subjects = subject
+            marks.classes = current_class
             marks.save()
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+
+def editmarks(request,id):
+    student = get_object_or_404(Student,pk=id)
+    subjectid = request.session.get('current_class_id')
+    subject = get_object_or_404(Subjects,pk=subjectid)
+    current_class = subject.classes
+    marks = addResultsForm()
+    if request.method == 'POST':
+        form = addResultsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            marks = form.save(commit=False)
+            marks.student = student
+            marks.classes = current_class
+            marks.subjects = subject
+            marks.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addResultsForm()  
+    return render(request,"teacher/editmarks.html",{"form":form,"subject":subject})
 
 
 
@@ -447,9 +349,9 @@ def studentInfo(request):
     subjects = current_student.subjects.all
     reg_number = current_student.reg_number
     house = current_student.hse
-
+ 
     marks = Results.objects.filter(student_id=current_student)
-    
+   
     
     context = {
         "current_student":current_student,
@@ -458,7 +360,6 @@ def studentInfo(request):
         "reg_number":reg_number,
         "house": house,
         "marks": marks,
-        
     }
 
     
