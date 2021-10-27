@@ -220,6 +220,13 @@ class Results(models.Model):
     class Meta:
         unique_together=("student", "subjects")
 
+    def update_results(self, using=None, fields=None, **kwargs):
+        if fields is not None:
+            fields = set(fields)
+            deferred_fields = self.get_deferred_fields()
+            if fields.intersection(deferred_fields):
+                fields = fields.union(deferred_fields)
+        super().refresh_from_db(using, fields, **kwargs)
 
 
     @property
