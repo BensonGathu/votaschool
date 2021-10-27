@@ -6,10 +6,10 @@
 <div class="container">
 
 {{current_student}} <br>
-{{classes}} <br>
+<b>{{current_student.classes}} </b> <br>
+<b>{{current_student.reg_number}} </b> <br>
+<b>{{current_student.hse}} </b> <br>
 
-{{reg_number}} <br>
-{{house}} <br>
 
 {% for subject in subjects %}
     {{subject.name}}
@@ -17,16 +17,14 @@
 
 <br>
 <form class="navbar-form navbar-right-align" action="{% url 'studentinfo'%}" >
-  <select name = "location"class="form-control form-control-lg">
+  
+  <select name = "selclasses"class="form-control form-control-lg">
+    
       <option selected>Select Academic Year</option>
-      <option value = "{{subject__class}}">{{subjects.classes}}</option>
-      <option value = "Kiambu">Kiambu</option>
-      <option value = "Makueni">Makueni</option>
-      <!-- <option value = "BuruBuru">BuruBuru</option> -->
-      <option value = "Mombasa">Mombasa</option>
-      <option value = "Nairobi">Nairobi</option>
-      
-      
+      {% for classes in p_classes %}
+      <option value = "{{classes.id}}">{{classes.name}}</option>
+
+      {% endfor %}
   </select>
   <input type="submit" value="Search" class="btn btn-default">
 </form> 

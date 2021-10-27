@@ -30,6 +30,7 @@ urlpatterns =[
     path("teacher",views.teacher,name="teacher"),
     path("students/<int:id>",views.Students,name="students"),
     path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
+    path("editmarks/<int:id>/",views.editmarks,name="editmarks"),
 
 
     #student urls

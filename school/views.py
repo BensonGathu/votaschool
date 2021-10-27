@@ -436,32 +436,59 @@ def addmarks(request,id):
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
 
 
+def editmarks(request,id):
+    student = get_object_or_404(Student,pk=id)
+    subjectid = request.session.get('current_class_id')
+    subject = get_object_or_404(Subjects,pk=subjectid)
+    result = Results.objects.get(student=student,subjects__id=subjectid)
+    current_class = subject.classes
+    marks = addResultsForm()
+    if request.method == 'POST':
+        form = addResultsForm(request.POST, request.FILES, instance=result)
+        if form.is_valid():
+            marks = form.save(commit=False)
+            marks.student = student
+            marks.subjects = subject
+            marks.classes = current_class
+            marks.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addResultsForm(instance=result)  
+    
+    return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+
 
 #students views
 def studentInfo(request):
     current_student = Student.objects.get(user=request.user)
-    classes = current_student.classes
+    if "selclasses" in request.GET and request.GET['selclasses']:
+        classes = request.GET.get("selclasses")
+    else:
+        classes = current_student.classes
     subjects = current_student.subjects.all
-    reg_number = current_student.reg_number
-    house = current_student.hse
- 
-    marks = Results.objects.filter(student_id=current_student)
-   
+    
+
+    previous_results = Results.objects.filter(student_id = current_student)
+    p_classes = []
+    for pc in previous_results:
+        if pc.classes not in p_classes:
+            p_classes.append(pc.classes)
+        
+    marks = Results.objects.filter(student_id=current_student,classes=classes)
+
     
     context = {
         "current_student":current_student,
         "classes":classes,
         "subjects":subjects,
-        "reg_number":reg_number,
-        "house": house,
         "marks": marks,
+        "p_classes":p_classes
         
-        
-    }
+        }
 
     
 
     return render(request,"student/info.html",context)
-    
+        
 
 
