@@ -129,6 +129,16 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                          {% url 'logout' as logout %}
+                          <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                 Logout
+      
+                              </p>
+                          </a>
+                      </li>
                         
                  
            
