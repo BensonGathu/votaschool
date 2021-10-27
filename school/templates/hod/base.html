@@ -43,6 +43,9 @@
   {% endblock %}
 
 </head>
+
+
+
 <body class="hold-transition sidebar-mini layout-fixed" style="height: 100%;">
     <div class="wrapper">
   
@@ -51,70 +54,111 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+              <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
           </li>
-        </ul>
+
+      </ul>
   
         <h4 style="margin-left: 10px; margin-top: 5px;">Student Management System</h4>
   
         <ul class="navbar-nav ml-auto">
         
         <!-- Notifications Dropdown Menu -->
-        <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fas fa-cog"></i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
-            
-            <a href="" class="dropdown-item">
-              <i class="fas fa-user-edit mr-2"></i> Update Profile
-            </a>
-  
-            <div class="dropdown-divider"></div>
-            <a href="" class="dropdown-item">
-              <i class="fas fa-power-off mr-2"></i> Logout
-            </a>
-            <div class="dropdown-divider"></div>
-          </div>
-        </li>
+        
       </ul>
   
       </nav>
       <!-- /.navbar -->
   
-      <!-- Main Sidebar Container -->
-      <!-- {% include "hod/sidebar.html" %}
-   -->
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-  
-      <!-- Content Header (Page header) -->
-        <div class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-6">
-                <h1 class="m-0 text-dark">
-                  {% block page_title %}
-                  {% endblock page_title %}
-                </h1>
-              </div><!-- /.col -->
-            
-            </div><!-- /.row -->
-          </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
-  
-        <!-- Main content -->
-        {% block main_content %}
-        {% endblock main_content %}
-        <!-- /.content -->
-      </div>
-      <!-- /.content-wrapper -->
-      {% include 'footer.html' %}
-  
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-2">
+          {% block sidebar %}
+          <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-dark" style="width: 250px; height: 700px;">
+            <!-- Brand Logo -->
+            <a href="{% url 'hodhome' %}" class="brand-link">
+                <span class="brand-text font-weight-light">Admin Panel</span>
+            </a>
+        
+            <!-- Sidebar -->
+            <div class="sidebar" >
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="{{ request.principal.profile_pic}}" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                   
+                </div>
+        
+                <!-- Sidebar Menu -->
+                <nav class="mt-2 " style="width: 250px;">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        
+                        <li class="nav-item">
+                            {% url 'hodhome' as hodhome %}
+                            <a href="{{hodhome}}" class="nav-link {% if hodhome == request.path %} active {% endif %}">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>
+                                    Home
+        
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                          {% url 'profile' as profile %}
+                          <a href="{{profile}}" class="nav-link {% if profile == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  View/edit profile
       
-    </div>
+                              </p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                        {% url 'registerteacher' as registerteacher %}
+                        <a href="{{registerteacher}}" class="nav-link {% if registerteacher == request.path %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                Add Teacher
+    
+                            </p>
+                        </a>
+                    </li>
+                      <li class="nav-item">
+                          {% url 'registerstudent' as registerstudent %}
+                          <a href="{{registerstudent}}" class="nav-link {% if registerstudent == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  Add student
+      
+                              </p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                        {% url 'logout' as logout %}
+                        <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                               Logout
+    
+                            </p>
+                        </a>
+                    </li>
+                   
+        </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+        </aside>
+         {% endblock %}
+          </div>
+          <div class="col-sm-10 ">{% block content %}{% endblock %}</div>
 
+        </div>
+      </div>
+
+      {% include "footer.html" %}
 
 
     {% block scripts %}
