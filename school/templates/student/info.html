@@ -1,5 +1,5 @@
 {%extends 'student/studentbase.html'%}
-
+{% load mymarks %}
 
 {% load static %}
 {% load bootstrap5 %}
@@ -14,7 +14,10 @@
 <b>{{current_student.reg_number}} </b> <br>
 <b>{{current_student.hse}} </b> <br>
 
-
+<h4>Total Marks: {{all_marks}} </h4>
+<h4>Average Points: {{all_points |floatformat }} </h4>
+<h4>Average Grade: {% ov_grade all_points %}</h4>
+<br>
 {% for subject in subjects %}
     {{subject.name}}
 {% endfor %}
@@ -24,7 +27,7 @@
   
   <select name = "selclasses"class="form-control form-control-lg">
     
-      <option selected>Select Academic Year</option>
+    <option selected>Select class </option>
       {% for classes in p_classes %}
       <option value = "{{classes.id}}">{{classes.name}}</option>
 
@@ -34,15 +37,19 @@
 </form> 
 <div class="card">
     <table class="table">
+      <thead ><tr> <h6 style="text-align:center;"><b>{{selectedClass.name}} results</b> </h6> </tr></thead>
         <thead>
+          
             <tr>
-              <th scope="col"></th>
+              
               <th scope="col">Subject</th>
               <th scope="col">Exam One</th>
               <th scope="col">Exam Two</th>
               <th scope="col">End Term</th>
               <th scope="col">Mean Marks</th>
               <th scope="col">Mean Grade</th>
+              <th scope="col">Comments</th>
+              <th scope="col">Teacher</th>
               
             </tr>
           
@@ -53,17 +60,19 @@
               <tr>
 
                 {% for mark in marks %}
-                <td> {{mark.subjects.id}}  </td>
+               
                 <td> {{mark.subjects.name}}  </td>
                   <td> {{mark.exam1}}  </td>
                   <td> {{mark.exam2 }} </td>
                   <td> {{mark.endterm}}  </td>
                   <td>  {{mark.mean_marks}} </td>
                   <td> {{mark.grade}}</td>
-
+                  <td> {{mark.comments}}</td>
+                  <td> {{mark.teacher}}</td>
+                  
                 </tr>
-                
-                  {% endfor %} 
+               
+                {% endfor %}
               
           </tbody>
     </table>

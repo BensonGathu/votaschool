@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import AbstractUser
+from django.db.models.deletion import CASCADE
 from django.db.models.fields.files import ImageField
 from django.db.models import Count, F, Value,Avg
 from django.db.models.query_utils import subclasses
@@ -210,6 +211,8 @@ class Results(models.Model):
     subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name="results")
     exam1 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
     exam2 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
+    comments = models.CharField(max_length=300)
+    teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     
@@ -219,6 +222,9 @@ class Results(models.Model):
   
     class Meta:
         unique_together=("student", "subjects")
+    @property
+    def position(self):
+        pass
 
     def update_results(self, using=None, fields=None, **kwargs):
         if fields is not None:
@@ -232,14 +238,62 @@ class Results(models.Model):
     @property
     def mean_marks(self):
         return (self.exam1 + self.exam2)/2 + self.endterm
+
     
     @property
     def grade(self):
         gde = (self.exam1 + self.exam2)/2 + self.endterm
-        if gde > 80:
+        if 80 <= gde <= 100:
             return "A"
-        elif gde > 75:
+        elif gde >= 75:
+            return "A-"
+        elif gde >= 70:
+            return "B+"
+        elif gde >= 65:
             return "B"
+        elif gde >= 60:
+            return "B-"
+        elif gde >= 55:
+            return "C+"
+        elif gde >= 50:
+            return "C"
+        elif gde >= 45:
+            return "C-"
+        elif gde >= 40:
+            return "D+"
+        elif gde >= 35:
+            return "D"
+        elif gde >= 30:
+            return "D-"
+        elif  gde >= 0:
+            return "E"
+    @property
+    def points(self):
+        grade = self.grade
+        if grade == "A":
+            return 12
+        elif grade == "A-":
+            return 11
+        elif grade == "B+":
+            return 10
+        elif grade == "B":
+            return 9
+        elif grade == "B-":
+            return 8
+        elif grade == "C+":
+            return 7
+        elif grade == "C":
+            return 6
+        elif grade == "C-":
+            return 5
+        elif grade == "D+":
+            return 4
+        elif grade == "D":
+            return 3
+        elif grade == "D-":
+            return 2
+        elif grade == "E":
+            return 1
 
     @classmethod
     def get_results(cls,subject_id):

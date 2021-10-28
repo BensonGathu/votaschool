@@ -299,7 +299,8 @@ def Students(request,id):
                 "all_students":all_students,
                 "exam1": exam1,
                 }
-
+    
+    
     return render(request,"teacher/studentlist.html",context)
 
 def addmarks(request,id):
@@ -315,6 +316,7 @@ def addmarks(request,id):
             marks.student = student
             marks.subjects = subject
             marks.classes = current_class
+            marks.teacher = request.user.username
             marks.save()
         return HttpResponseRedirect(request.path_info) 
     else:
@@ -328,6 +330,7 @@ def editmarks(request,id):
     subjectid = request.session.get('current_class_id')
     subject = get_object_or_404(Subjects,pk=subjectid)
     result = Results.objects.get(student=student,subjects__id=subjectid)
+    
     current_class = subject.classes
     marks = addResultsForm()
     if request.method == 'POST':
@@ -353,23 +356,45 @@ def studentInfo(request):
     else:
         classes = current_student.classes
     subjects = current_student.subjects.all
+    marks = Results.objects.filter(student_id=current_student,classes=classes)
     
 
+    #Get previous classes add them into a list then push them to the frontend
     previous_results = Results.objects.filter(student_id = current_student)
     p_classes = []
     for pc in previous_results:
         if pc.classes not in p_classes:
             p_classes.append(pc.classes)
         
-    marks = Results.objects.filter(student_id=current_student,classes=classes)
+    #get total marks
+    my_marks = []
+    for mark in marks:
+        my_marks.append(mark.mean_marks)
+    all_marks = sum(my_marks)
 
+    #get total points
+    my_points = []
+    for mark in marks:
+        my_points.append(mark.points)
+    all_points = sum(my_points) / len(my_points)
+  
+
+    
+
+    try:
+        selectedClass = get_object_or_404(Classes,pk=classes)
+    except:
+        selectedClass = get_object_or_404(Classes,pk=classes.id)
     
     context = {
         "current_student":current_student,
         "classes":classes,
         "subjects":subjects,
         "marks": marks,
-        "p_classes":p_classes
+        "p_classes":p_classes,
+        "all_marks":all_marks,
+        "all_points":all_points,
+        "selectedClass":selectedClass
         
         }
 
