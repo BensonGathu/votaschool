@@ -250,7 +250,7 @@ class addClassForm(forms.ModelForm):
 class addResultsForm(forms.ModelForm):
     class Meta:
         model = Results
-        fields = ['exam1','exam2','endterm']
+        fields = ['exam1','exam2','endterm','comments']
 
 
 # class addFeeForm(forms.ModelForm):
