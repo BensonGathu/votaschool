@@ -236,10 +236,61 @@ class Results(models.Model):
     @property
     def grade(self):
         gde = (self.exam1 + self.exam2)/2 + self.endterm
-        if gde > 80:
+        if 80 <= gde <= 100:
             return "A"
-        elif gde > 75:
+        elif gde >= 75:
+            return "A-"
+        elif gde >= 70:
+            return "B+"
+        elif gde >= 65:
             return "B"
+        elif gde >= 60:
+            return "B-"
+        elif gde >= 55:
+            return "C+"
+        elif gde >= 50:
+            return "C"
+        elif gde >= 45:
+            return "C-"
+        elif gde >= 40:
+            return "D+"
+        elif gde >= 35:
+            return "D"
+        elif gde >= 30:
+            return "D-"
+        elif  gde >= 0:
+            return "E"
+       
+    
+    @property
+    def points(self):
+        grade = self.grade
+        if grade == "A":
+            return 12
+        elif grade == "A-":
+            return 11
+        elif grade == "B+":
+            return 10
+        elif grade == "B":
+            return 9
+        elif grade == "B-":
+            return 8
+        elif grade == "C+":
+            return 7
+        elif grade == "C":
+            return 6
+        elif grade == "C-":
+            return 5
+        elif grade == "D+":
+            return 4
+        elif grade == "D":
+            return 3
+        elif grade == "D-":
+            return 2
+        elif grade == "E":
+            return 1
+
+        
 
     @classmethod
     def get_results(cls,subject_id):
