@@ -9,9 +9,11 @@ from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from.decorators import *
 
 # Create your views here.
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def hodhome(request):
     total_students = Student.objects.all().count()
     total_teachers = Teacher.objects.all().count()
@@ -22,12 +24,20 @@ def hodhome(request):
     }
     return render(request,'../templates/hod/hod.html', context)
 
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
 def teachhome(request):
     return render(request,'../templates/teacher/teacher.html')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['student'])
 def studhome(request):
     return render(request,'../templates/student/student.html')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def principal_registration(request):
     if request.method == 'POST':
         form = PrincipalSignUpForm(request.POST)
@@ -49,7 +59,8 @@ def principal_registration(request):
     }
     return render(request, 'auth/principalregistration.html', context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def teacher_registration(request):
     if request.method == 'POST':
         form = TeacherSignUpForm(request.POST)
@@ -71,7 +82,8 @@ def teacher_registration(request):
     }
     return render(request, 'auth/teacherregistration.html', context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def student_registration(request):
     if request.method == 'POST':
         form = StudentSignUpForm(request.POST)
@@ -126,7 +138,7 @@ def logoutUser(request):
     return redirect('login')
 
 
-@login_required
+@login_required(login_url='login')
 def profile(request):
     current_user = request.user
     if current_user.is_principal:
@@ -201,6 +213,7 @@ def profile(request):
             return render(request, 'auth/studentprofile.html', context)
   
             
+@login_required(login_url='login')
 
 def load_subjects(request):
     class_id = request.GET.get('classes_id')
@@ -211,46 +224,47 @@ def load_subjects(request):
 
 
 
-
+@login_required(login_url='login')
 def allstudents(request):
     all_classes = Classes.objects.all()
     all_students = Student.objects.filter(classes__name="Form One").all()
     
     return render(request,"students.html",{"all_classes":all_classes,"all_students":all_students})
 
+# @login_required(login_url='login')
+# def addTeacher(request):
+#     all_teachers = Teacher.objects.all()
+#     form = TeacherRegisterForm()
+#     if request.method == 'POST':
+#         form = TeacherRegisterForm(request.POST)
+#         if form.is_valid():
+#             teacher = form.save(commit=False)
+#             teacher.save()
+#         return HttpResponseRedirect(request.path_info) 
+#     else:
+#         form = TeacherRegisterForm()
 
-def addTeacher(request):
-    all_teachers = Teacher.objects.all()
-    form = TeacherRegisterForm()
-    if request.method == 'POST':
-        form = TeacherRegisterForm(request.POST)
-        if form.is_valid():
-            teacher = form.save(commit=False)
-            teacher.save()
-        return HttpResponseRedirect(request.path_info) 
-    else:
-        form = TeacherRegisterForm()
-
-    return render(request,"addteacher.html",{"form":form})
-
-
+#     return render(request,"addteacher.html",{"form":form})
 
 
-def addStudent(request):
-    all_students = Student.objects.all()
-    form = StudentRegisterForm()
-    if request.method == 'POST':
-        form = StudentRegisterForm(request.POST)
-        if form.is_valid():
-            subject = form.save(commit=False)
-            subject.save()
-        return HttpResponseRedirect(request.path_info) 
-    else:
-        form = StudentRegisterForm()
 
-    return render(request,"addstudent.html",{"form":form,"all_students":all_students})
+# @login_required(login_url='login')
+# def addStudent(request):
+#     all_students = Student.objects.all()
+#     form = StudentRegisterForm()
+#     if request.method == 'POST':
+#         form = StudentRegisterForm(request.POST)
+#         if form.is_valid():
+#             subject = form.save(commit=False)
+#             subject.save()
+#         return HttpResponseRedirect(request.path_info) 
+#     else:
+#         form = StudentRegisterForm()
 
+#     return render(request,"addstudent.html",{"form":form,"all_students":all_students})
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addSubject(request):
     all_subjects = Subjects.objects.all()
     form = addSubjectForm()
@@ -265,14 +279,18 @@ def addSubject(request):
 
     return render(request,"addsubject.html",{"form":form,"all_subjects":all_subjects})
 
+@login_required(login_url='login')
 def classes(request):
     all_classes = Classes.objects.all()    
     return render(request,"classes.html",{"all_classes":all_classes})
 
+@login_required(login_url='login')
 def subject(request,id):
     subject = get_object_or_404(Subjects, pk=id)
     return render(request,"subject.html",{"subject":subject})
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin','teacher'])
 def addresults(request):
     # subjects = Subjects.objects.filter(teacher.id=request.id)
     teacher = Teacher.objects.get(user_id=request.user)
@@ -280,12 +298,14 @@ def addresults(request):
     form = addResultsForm()
     return render(request,"teacher/results.html",{"teacher":teacher,"subjects":subjects,"form":form})
 
-
+@login_required(login_url='login')
 def teacher(request):
     teacher = Teacher.objects.get(user_id=request.user)
     subjects = Subjects.objects.filter(teacher=request.user.id)
     return render(request,"teacher/teacher.html",)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
 def Students(request,id):
     subject = get_object_or_404(Subjects,pk=id)
 
@@ -303,6 +323,8 @@ def Students(request,id):
     
     return render(request,"teacher/studentlist.html",context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
 def addmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
@@ -324,7 +346,8 @@ def addmarks(request,id):
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
 
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
 def editmarks(request,id):
     student = get_object_or_404(Student,pk=id)
     subjectid = request.session.get('current_class_id')
@@ -349,6 +372,8 @@ def editmarks(request,id):
 
 
 #students views
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['student'])
 def studentInfo(request):
     current_student = Student.objects.get(user=request.user)
     if "selclasses" in request.GET and request.GET['selclasses']:
