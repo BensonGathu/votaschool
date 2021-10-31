@@ -397,6 +397,8 @@ def studentInfo(request):
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
 
+    # #mean_marks 
+    # mean = all_marks/(len(my_marks)*100) * 100
     #get total points
     my_points = []
     for mark in marks:

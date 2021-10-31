@@ -48,3 +48,15 @@ def ov_grade(all_points):
         return "D-"
     elif all_points >= 0:
         return "E"
+
+my_marks = []
+@register.simple_tag
+def mean_marks(current_student,classes):
+    my_marks.clear()
+    marks = Results.objects.filter(student_id=current_student,classes=classes)
+  
+    for mark in marks:
+        my_marks.append(mark.mean_marks)
+    all_marks = sum(my_marks)
+    return int(all_marks/(len(my_marks)*100) * 100)
+    print(len(my_marks))
