@@ -12,13 +12,14 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  
                   <th scope="col">First Name</th>
                   <th scope="col">Middle Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">exam 1</th>
                   <th scope="col">exam 2</th>
                   <th scope="col">end term</th>
+                  <th scope="col">Mean Marks</th>
                   <th scope="col">add marks</th>
                   <th scope="col">edit marks</th>
 
@@ -28,7 +29,7 @@
               {% for students in all_students%}
               <tbody>
                   <tr>
-                      <th>{{students.user.id}}</th>
+                  
                       <td>{{students.user.first_name}}</td>
                       <td>{{students.user.middle_name}}</td>
                       <td>{{students.user.last_name}}</td>
@@ -37,8 +38,11 @@
                       <td> {{mark.exam1}} </td>
                       <td> {{mark.exam2}} </td>
                       <td> {{mark.endterm}} </td>
-   
+                      <td>  {{mark.mean_marks}} </td>
+                            
+
                       {% endfor%}
+                      
                      
                       <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></td>
                       <td><a href="{% url 'editmarks' students.user.id %}" class="btn btn-primary">edit Marks</a></td>
