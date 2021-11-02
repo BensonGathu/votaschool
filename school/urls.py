@@ -24,6 +24,7 @@ urlpatterns =[
     path("allclasses/",views.classes,name="allclasses"),
     path("subject/<int:id>/",views.subject,name="subject"),
     path("addresults/",views.addresults,name="addresults"),
+    path("getposition/<int:id>/",views.student_positions,name="getposition"),
     # path("subjectdetails/<int:id>/",views.subjectdetails,name="subjectdetails"),
     # path("create-user/",views.UserCreateView.as_view(),name="createuser"),
     # path("create-student/<int:id>/",views.StudentView.as_view(),name="create-student"),
@@ -39,6 +40,8 @@ urlpatterns =[
 
     #student urls
     path("studentinfo/",views.studentInfo,name="studentinfo"),
+
+
 
 
 ]
