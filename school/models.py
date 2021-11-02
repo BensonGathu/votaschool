@@ -176,6 +176,10 @@ class Student(models.Model):
     reg_number = models.CharField(max_length=2000)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
+    total_marks = models.FloatField(blank=True,null=True)
+    position = models.IntegerField(blank=True,null=True)
+
+
 
     def __str__(self):
         return self.user.username
