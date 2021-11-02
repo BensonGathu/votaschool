@@ -172,9 +172,9 @@ def profile(request):
         except Teacher.DoesNotExist:
             teacher = Teacher(user=request.user)
         if request.method == 'POST':
-            u_form = TeacherUpdateForm(request.POST, instance=request.user)
+            u_form = TeacherUpdateForm(request.POST )
             p_form = TeacherProfileUpdateForm(
-                request.POST, request.FILES)
+                request.POST, request.FILES, instance=request.user.teacher)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -235,37 +235,6 @@ def allstudents(request):
     
     return render(request,"students.html",{"all_classes":all_classes,"all_students":all_students})
 
-# @login_required(login_url='login')
-# def addTeacher(request):
-#     all_teachers = Teacher.objects.all()
-#     form = TeacherRegisterForm()
-#     if request.method == 'POST':
-#         form = TeacherRegisterForm(request.POST)
-#         if form.is_valid():
-#             teacher = form.save(commit=False)
-#             teacher.save()
-#         return HttpResponseRedirect(request.path_info) 
-#     else:
-#         form = TeacherRegisterForm()
-
-#     return render(request,"addteacher.html",{"form":form})
-
-
-
-# @login_required(login_url='login')
-# def addStudent(request):
-#     all_students = Student.objects.all()
-#     form = StudentRegisterForm()
-#     if request.method == 'POST':
-#         form = StudentRegisterForm(request.POST)
-#         if form.is_valid():
-#             subject = form.save(commit=False)
-#             subject.save()
-#         return HttpResponseRedirect(request.path_info) 
-#     else:
-#         form = StudentRegisterForm()
-
-#     return render(request,"addstudent.html",{"form":form,"all_students":all_students})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -336,6 +305,8 @@ def addmarks(request,id):
     subject = get_object_or_404(Subjects,pk=subjectid)
     current_class = subject.classes
     marks = addResultsForm()
+    Results.objects.filter(student=student).order_by('')
+
     if request.method == 'POST':
         form = addResultsForm(request.POST)
         if form.is_valid():
@@ -417,7 +388,7 @@ def studentInfo(request):
         classes = current_student.classes
     subjects = current_student.subjects.all
     marks = Results.objects.filter(student_id=current_student,classes=classes)
-    
+
 
     #Get previous classes add them into a list then push them to the frontend
     previous_results = Results.objects.filter(student_id = current_student)

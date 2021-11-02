@@ -180,7 +180,6 @@ class Student(models.Model):
     position = models.IntegerField(blank=True,null=True)
 
 
-
     def __str__(self):
         return self.user.username
 
@@ -208,7 +207,8 @@ class Student(models.Model):
     @classmethod
     def search_student(cls,reg_number):
         return cls.objects.filter(reg_number=reg_number).user
-        
+
+    
 class Results(models.Model):
     classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
     student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="student_results")
@@ -219,6 +219,7 @@ class Results(models.Model):
     teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
     date_created = models.DateTimeField(auto_now_add=True)
+
     
     def __str__(self):
         if self.exam1 != None and self.exam2 != None and self.endterm != None:
@@ -242,7 +243,8 @@ class Results(models.Model):
     @property
     def mean_marks(self):
         return (self.exam1 + self.exam2)/2 + self.endterm
-
+    
+    
     
     @property
     def grade(self):
