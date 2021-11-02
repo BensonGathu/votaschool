@@ -1,4 +1,5 @@
 {% load bootstrap3 %}
+{% load bootstrap4 %}
 {% load bootstrap5 %}
 {% load static%}
 <!DOCTYPE html>
@@ -99,8 +100,8 @@
             <div class="sidebar" >
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="{{ request.principal.profile_pic}}" class="img-circle elevation-2" alt="User Image">
+                    <div class="image" >
+                        <img src="{{ request.principal.profile_pic}}" class="img-circle elevation-2" alt="User Image" >
                     </div>
                    
                 </div>
@@ -110,8 +111,8 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         
                         <li class="nav-item">
-                            {% url 'studhome' as home %}
-                            <a href="{{home}}" class="nav-link {% if home == request.path %} active {% endif %}">
+                            {% url 'studhome' as studhome %}
+                            <a href="{{studhome}}" class="nav-link {% if studhome == request.path %} active {% endif %}">
                                 <i class="nav-icon fas fa-th"></i>
                                 <p>
                                     Home
@@ -129,6 +130,16 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                          {% url 'profile' as profile %}
+                          <a href="{{profile}}" class="nav-link {% if profile == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  update profile
+      
+                              </p>
+                          </a>
+                      </li>
                         <li class="nav-item">
                           {% url 'logout' as logout %}
                           <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
@@ -151,6 +162,7 @@
         </div>
       </div>
 
+      {% include "footer.html" %}
 
 
     {% block scripts %}
