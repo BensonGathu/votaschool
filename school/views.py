@@ -340,10 +340,28 @@ def addmarks(request,id):
             marks.classes = current_class
             marks.teacher = request.user.username
             marks.save()
+
+            marks = Results.objects.filter(student_id=id,classes=current_class)
+            my_marks = []
+            for mark in marks:
+                my_marks.append(mark.mean_marks)
+            all_marks = sum(my_marks)
+
+            student.total_marks = all_marks
+            student.save()
+
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+
+def student_positions(request,id):
+    all_students = Student.objects.filter(classes=id).order_by("-total_marks")
+    
+    for student,i in enumerate(all_students):
+        student.position = i+1 
+        student.save()
+
 
 
 @login_required(login_url='login')
@@ -392,21 +410,29 @@ def studentInfo(request):
             p_classes.append(pc.classes)
         
     #get total marks
+ 
     my_marks = []
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
 
+
+
     # #mean_marks 
     # mean = all_marks/(len(my_marks)*100) * 100
     #get total points
+
     my_points = []
     for mark in marks:
         my_points.append(mark.points)
     all_points = sum(my_points) / len(my_points)
   
-
-    
+    # all_student_marks = []
+    # all_results = Results.objects.filter(classes=classes)
+    # for results in all_results:
+    #     all_student_marks.append(results.mean_marks)
+    # print(len(all_student_marks))
+    # print(all_student_marks)
 
     try:
         selectedClass = get_object_or_404(Classes,pk=classes)
