@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 from django.db.models.query import InstanceCheckMeta
+from django.db.models.query_utils import PathInfo
 from django.shortcuts import render,redirect,get_object_or_404
 from. forms import *
 from .models import *
@@ -171,9 +172,9 @@ def profile(request):
         except Teacher.DoesNotExist:
             teacher = Teacher(user=request.user)
         if request.method == 'POST':
-            u_form = TeacherUpdateForm(request.POST, instance=request.user)
+            u_form = TeacherUpdateForm(request.POST )
             p_form = TeacherProfileUpdateForm(
-                request.POST, request.FILES)
+                request.POST, request.FILES, instance=request.user.teacher)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -253,8 +254,9 @@ def addSubject(request):
 
 @login_required(login_url='login')
 def classes(request):
-    all_classes = Classes.objects.all()    
-    return render(request,"classes.html",{"all_classes":all_classes})
+    all_classes = Classes.objects.all()
+    context = {"all_classes":all_classes}    
+    return render(request,"hod/allclasses.html",context)
 
 @login_required(login_url='login')
 def subject(request,id):
@@ -332,9 +334,11 @@ def addmarks(request,id):
 def student_positions(request,id):
     all_students = Student.objects.filter(classes=id).order_by("-total_marks")
     
-    for student,i in enumerate(all_students):
+    for i,student in enumerate(all_students):
         student.position = i+1 
         student.save()
+        
+    return redirect("allclasses") 
 
 
 
@@ -356,6 +360,16 @@ def editmarks(request,id):
             marks.subjects = subject
             marks.classes = current_class
             marks.save()
+
+
+            marks = Results.objects.filter(student_id=id,classes=current_class)
+            my_marks = []
+            for mark in marks:
+                my_marks.append(mark.mean_marks)
+            all_marks = sum(my_marks)
+
+            student.total_marks = all_marks
+            student.save()
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm(instance=result)  
@@ -390,7 +404,10 @@ def studentInfo(request):
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
 
-
+    
+    all_students = Student.objects.filter(classes=classes)
+    studentNum = all_students.count()
+    
 
     # #mean_marks 
     # mean = all_marks/(len(my_marks)*100) * 100
@@ -421,7 +438,8 @@ def studentInfo(request):
         "p_classes":p_classes,
         "all_marks":all_marks,
         "all_points":all_points,
-        "selectedClass":selectedClass
+        "selectedClass":selectedClass,
+        "studentNum":studentNum
         
         }
 

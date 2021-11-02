@@ -219,7 +219,6 @@ class Results(models.Model):
     teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
     date_created = models.DateTimeField(auto_now_add=True)
-    position = models.IntegerField(blank=True,null=True)
 
     
     def __str__(self):
@@ -245,9 +244,7 @@ class Results(models.Model):
     def mean_marks(self):
         return (self.exam1 + self.exam2)/2 + self.endterm
     
-    class Meta:
-        order_with_respect_to = 'position'
-
+    
     
     @property
     def grade(self):

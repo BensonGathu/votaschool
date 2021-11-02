@@ -10,7 +10,7 @@
 <div class="row">
   <div class="col-md-6">
   <div style="width: 30rem;">
-    <img src="{{ current_student.profile_photo.url }}" class="card-img-top" alt="" style="height: 150px; width: 250px;">
+    <img src="{{ current_student.profile_photo.url }}" class="card-img-top" alt="image" style="height: 150px; width: 250px;">
     <div class="card-body">
     
       <b class="card-text">Name: {{current_student}}</b> <br>
@@ -29,12 +29,12 @@
       <h4 class="card-text">Average Points: {{all_points |floatformat }}</h4> 
       <h4 class="card-text">Average Grade: {% ov_grade all_points %} </h4>
       <h4>Mean Marks: {% mean_marks current_student  classes%}%</h4>
+      <h3>Position: {{current_student.position}}/{{studentNum}}</h3>
     </div>
   </div>
 </div>
 
 </div>
-
 
 <br>
 {% for subject in subjects %}
