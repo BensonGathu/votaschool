@@ -12,6 +12,9 @@ from django.contrib.auth.decorators import login_required
 from.decorators import *
 
 # Create your views here.
+def home(request):
+    return render(request,'../templates/home.html')
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def hodhome(request):
@@ -210,7 +213,7 @@ def profile(request):
                     'p_form': p_form,
                     'current_user': current_user,
                     }
-            return render(request, 'auth/studentprofile.html', context)
+            return render(request, 'student/studentprofile.html', context)
   
             
 @login_required(login_url='login')

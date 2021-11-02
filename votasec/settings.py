@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'school',
     "bootstrap5",
     'bootstrap3',
+    'bootstrap4',
     'django_bootstrap5',
     'crispy_forms',
 ]
