@@ -121,6 +121,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                          {% url 'profile' as profile %}
+                          <a href="{{profile}}" class="nav-link {% if profile == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  update profile
+      
+                              </p>
+                          </a>
+                      </li>
+                        <li class="nav-item">
                             {% url 'studentinfo' as studentinfo %}
                             <a href="{{studentinfo}}" class="nav-link {% if studentinfo == request.path %} active {% endif %}">
                                 <i class="nav-icon fas fa-th"></i>
@@ -131,15 +141,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                          {% url 'profile' as profile %}
-                          <a href="{{profile}}" class="nav-link {% if profile == request.path %} active {% endif %}">
+                          {% url 'reportform' as reportform %}
+                          <a href="{{reportform}}" class="nav-link {% if reportform == request.path %} active {% endif %}">
                               <i class="nav-icon fas fa-th"></i>
                               <p>
-                                  update profile
+                                  Print report
       
                               </p>
                           </a>
                       </li>
+                       
                         <li class="nav-item">
                           {% url 'logout' as logout %}
                           <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">

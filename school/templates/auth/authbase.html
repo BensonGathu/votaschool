@@ -131,6 +131,16 @@
                           </a>
                       </li>
                       <li class="nav-item">
+                        {% url 'addsubject' as addsubject %}
+                        <a href="{{addsubject}}" class="nav-link {% if addsubject == request.path %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                Add Subject
+    
+                            </p>
+                        </a>
+                    </li>
+                      <li class="nav-item">
                         {% url 'logout' as logout %}
                         <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
                             <i class="nav-icon fas fa-th"></i>

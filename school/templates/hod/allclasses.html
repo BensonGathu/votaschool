@@ -3,16 +3,26 @@
 {% load static %}
 {% load bootstrap5 %}
 
+<div class="container">
+    
 
-{% for class in all_classes%}
-{{class}}
-<a href="{% url 'getposition' class.id %}" class="btn btn-primary">Genereate Positions</a>
-{{class.students.all}}
-<br>
-{% endfor%}
+    <div class="row">
+        {% for class in all_classes%}
 
-{{subject}}
+            <div class="card">
 
 
+        {{class}}
+        <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a>
+        {{class.students.all}}
+        <br>
+    </div>
+
+        {% endfor%}
+      
+
+        {{subject}}
+    </div>
+</div>
 
 {%endblock%}
