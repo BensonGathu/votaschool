@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 {% load bootstrap5 %}
+{% load mymarks %}
 
 <div class="container">
     
@@ -11,10 +12,17 @@
 
             <div class="card">
 
-
         {{class}}
         <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a>
-        {{class.students.all}}
+        {% all_students class as mystuds %}
+        
+        {% for stud in mystuds %}
+            
+            {{stud.user.first_name}} {{stud.user.middle_name}} {{stud.user.last_name}} <br>
+          
+        
+        {%endfor%}
+       
         <br>
     </div>
 

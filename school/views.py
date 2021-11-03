@@ -148,6 +148,11 @@ def logoutUser(request):
 def profile(request):
     current_user = request.user
     if current_user.is_principal:
+        try:
+            principal = request.user.principal
+        except Principal.DoesNotExist:
+            principal = Principal(user=request.user)
+
         if request.method == 'POST':
             u_form = PrincipalUpdateForm(
                 request.POST, instance=request.user)
@@ -156,6 +161,7 @@ def profile(request):
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
+         
                 messages.success(request, f'Your account has been updated!')
             return redirect('hodhome')
         else:
@@ -167,16 +173,16 @@ def profile(request):
                     'current_user': current_user,
                     }
             return render(request, 'auth/principalprofile.html', context)
-
+                              
     if current_user.is_teacher:
         try:
             teacher = request.user.teacher
         except Teacher.DoesNotExist:
             teacher = Teacher(user=request.user)
         if request.method == 'POST':
-            u_form = TeacherUpdateForm(request.POST )
+            u_form = TeacherUpdateForm(request.POST, instance=request.user)
             p_form = TeacherProfileUpdateForm(
-                request.POST, request.FILES, instance=request.user.teacher)
+                request.POST, request.FILES,instance=request.user.teacher)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -193,6 +199,7 @@ def profile(request):
                     'current_user': current_user,
                     }
             return render(request, 'auth/teacherprofile.html', context)
+
 
 
     if current_user.is_student:
