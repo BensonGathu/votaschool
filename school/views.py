@@ -21,9 +21,11 @@ def home(request):
 def hodhome(request):
     total_students = Student.objects.all().count()
     total_teachers = Teacher.objects.all().count()
+    all_subjects = Subjects.objects.all()
     context = {
         'total_students': total_students,
-        'total_teachers': total_teachers
+        'total_teachers': total_teachers,
+        'all_subjects': all_subjects
         
     }
     return render(request,'../templates/hod/hod.html', context)
@@ -250,7 +252,7 @@ def addSubject(request):
     else:
         form = addSubjectForm()
 
-    return render(request,"addsubject.html",{"form":form,"all_subjects":all_subjects})
+    return render(request,"hod/addsubject.html",{"form":form,"all_subjects":all_subjects})
 
 @login_required(login_url='login')
 def classes(request):
@@ -305,7 +307,6 @@ def addmarks(request,id):
     subject = get_object_or_404(Subjects,pk=subjectid)
     current_class = subject.classes
     marks = addResultsForm()
-    Results.objects.filter(student=student).order_by('')
 
     if request.method == 'POST':
         form = addResultsForm(request.POST)
@@ -448,4 +449,71 @@ def studentInfo(request):
     return render(request,"student/info.html",context)
         
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['student'])
+def reportform(request):
+    current_student = Student.objects.get(user=request.user)
+    if "selclasses" in request.GET and request.GET['selclasses']:
+        classes = request.GET.get("selclasses")
+    else:
+        classes = current_student.classes
+    subjects = current_student.subjects.all
+    marks = Results.objects.filter(student_id=current_student,classes=classes)
 
+
+    #Get previous classes add them into a list then push them to the frontend
+    previous_results = Results.objects.filter(student_id = current_student)
+    p_classes = []
+    for pc in previous_results:
+        if pc.classes not in p_classes:
+            p_classes.append(pc.classes)
+        
+    #get total marks
+ 
+    my_marks = []
+    for mark in marks:
+        my_marks.append(mark.mean_marks)
+    all_marks = sum(my_marks)
+
+    
+    all_students = Student.objects.filter(classes=classes)
+    studentNum = all_students.count()
+    
+
+    # #mean_marks 
+    # mean = all_marks/(len(my_marks)*100) * 100
+    #get total points
+
+    my_points = []
+    for mark in marks:
+        my_points.append(mark.points)
+    all_points = sum(my_points) / len(my_points)
+  
+    # all_student_marks = []
+    # all_results = Results.objects.filter(classes=classes)
+    # for results in all_results:
+    #     all_student_marks.append(results.mean_marks)
+    # print(len(all_student_marks))
+    # print(all_student_marks)
+
+    try:
+        selectedClass = get_object_or_404(Classes,pk=classes)
+    except:
+        selectedClass = get_object_or_404(Classes,pk=classes.id)
+    
+    context = {
+        "current_student":current_student,
+        "classes":classes,
+        "subjects":subjects,
+        "marks": marks,
+        "p_classes":p_classes,
+        "all_marks":all_marks,
+        "all_points":all_points,
+        "selectedClass":selectedClass,
+        "studentNum":studentNum
+        
+        }
+
+    
+
+    return render(request,"student/report.html",context)

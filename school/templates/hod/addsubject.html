@@ -1,3 +1,5 @@
+{%extends 'hod/base.html'%}
+{% block content %}
 {% load static %}
 {% load bootstrap5 %}
 
@@ -14,9 +16,6 @@
   </form>
 
   <!-- {{all_subjects}} -->
+  {%endblock%}
 
-  {% for subject in all_subjects%}
-  {{subject.name}}
-  {{subject.students.count}}
- 
-  {% endfor%}
+  
