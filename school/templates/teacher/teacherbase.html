@@ -121,6 +121,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                          {% url 'profile' as profile %}
+                          <a href="{{profile}}" class="nav-link {% if profile == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  update profile
+      
+                              </p>
+                          </a>
+                      </li>
+                        <li class="nav-item">
                             {% url 'addresults' as addresults %}
                             <a href="{{addresults}}" class="nav-link {% if addresults == request.path %} active {% endif %}">
                                 <i class="nav-icon fas fa-th"></i>

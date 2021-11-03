@@ -3,6 +3,8 @@
 {% block content %}
 <div class="container">
     <h5>TR {{teacher}}</h5>
+    <img src="{{ current_teacher.profile_photo.url }}" class="card-img-top" alt="image" style="height: 150px; width: 250px;">
+
     <div class="row">
       {% for subject in subjects %}
 

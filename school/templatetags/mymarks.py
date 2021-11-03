@@ -1,6 +1,6 @@
 from django import template
 
-from school.views import teacher
+from school.views import allstudents, teacher
 from school.models import Results,Student
 
 register = template.Library()
@@ -68,3 +68,8 @@ def class_position(classes,stud_mean):
     print(all_students)
 
 
+
+@register.simple_tag
+def all_students(classes):
+    students = Student.objects.filter(classes=classes)
+    return students
