@@ -58,7 +58,10 @@ def mean_marks(current_student,classes):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    return int(all_marks/(len(my_marks)*100) * 100)
+    if len(my_marks) != 0:
+        return int(all_marks/(len(my_marks)*100) * 100)
+    else:
+        return 0
     
 
 @register.simple_tag
