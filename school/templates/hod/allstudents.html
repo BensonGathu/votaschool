@@ -1,0 +1,19 @@
+{%extends 'hod/base.html'%}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+{% load mymarks %}
+
+{% for stud in all_students %}
+            
+{{stud.user.first_name}} {{stud.user.middle_name}} {{stud.user.last_name}}  <a href="{% url 'editprofile' stud.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Edit Profile</a>
+<a href="{% url 'delprofile' stud.user.id %}" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Delete Profile</a><br>
+
+
+
+{%endfor%}
+
+
+
+
+{%endblock%}
