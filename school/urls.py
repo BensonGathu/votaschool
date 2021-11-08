@@ -20,6 +20,7 @@ urlpatterns =[
     path('allstudents/<int:id>',views.allstudents,name="allstudents"),  
     path("editprofile/<int:id>",views.editprofile,name="editprofile"),
     path("delprofile/<int:id>",views.delprofile,name="delprofile"),
+    path("addfees/<int:id>/",views.fees,name="addfees"),
     # path("addteacher",views.addTeacher,name="addteacher"),
     # path("addstudent",views.addStudent,name="addstudent"),
     path("addsubject",views.addSubject,name="addsubject"), 
