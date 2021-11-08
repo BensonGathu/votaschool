@@ -1,4 +1,10 @@
 {%extends 'student/studentbase.html'%}
 {% block content %}
-
+    {% for fee in fee_info%}
+   <div style="margin-left: 35px;">
+    Term's Fee: {{fee.amount_payable}} <br>
+    Paid: {{fee.amount_paid}} <br>
+    balance: {{fee}}<br>
+</div>
+{% endfor %}
 {%endblock%}

@@ -42,7 +42,12 @@ def teachhome(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
 def studhome(request):
-    return render(request,'../templates/student/student.html')
+    currentstudent = request.user.id
+    fee_info = Fees.objects.filter(student=currentstudent)
+    context = {
+        "fee_info":fee_info,
+    }
+    return render(request,'../templates/student/student.html',context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -419,7 +424,22 @@ def student_positions(request,id):
         student.position = i+1 
         student.save()
         
-    return redirect("allclasses") 
+    return redirect("allclasses")
+def fees(request,id):
+    student = get_object_or_404(Student,pk=id)
+    fees = addFeesForm()
+
+    if request.method == 'POST':
+        form = addFeesForm(request.POST)
+        if form.is_valid():
+            fees = form.save(commit=False)
+            fees.student = student
+            fees.save()
+            return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addFeesForm()  
+    return render(request,"hod/fees.html",{"form":form})
+
 
 
 
