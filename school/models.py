@@ -215,9 +215,11 @@ class Results(models.Model):
     subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name="results")
     exam1 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
     exam2 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
-    comments = models.CharField(max_length=300)
+    # comments = models.CharField(max_length=300)
     teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
+    p_comments = models.CharField(max_length=100,null=True,blank=True)
+    t_comments = models.CharField(max_length=100,null=True,blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     
@@ -273,6 +275,8 @@ class Results(models.Model):
             return "D-"
         elif  gde >= 0:
             return "E"
+
+
     @property
     def points(self):
         grade = self.grade
