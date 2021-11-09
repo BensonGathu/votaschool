@@ -417,6 +417,8 @@ def addmarks(request,id):
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def student_positions(request,id):
     all_students = Student.objects.filter(classes=id).order_by("-total_marks")
     
@@ -425,6 +427,8 @@ def student_positions(request,id):
         student.save()
         
     return redirect("allclasses")
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def fees(request,id):
     student = get_object_or_404(Student,pk=id)
     fees = addFeesForm()
@@ -508,6 +512,8 @@ def studentInfo(request):
     
     all_students = Student.objects.filter(classes=classes)
     studentNum = all_students.count()
+    if studentNum <= 0:
+        studentNum = 1
     
 
     # #mean_marks 
