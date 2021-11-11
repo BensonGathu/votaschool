@@ -1,9 +1,12 @@
+from re import S
 from django import conf
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 from django.db.models.query import InstanceCheckMeta
 from django.db.models.query_utils import PathInfo
 from django.shortcuts import render,redirect,get_object_or_404
+
+# from school.templatetags.mymarks import comments
 from. forms import *
 from .models import *
 from django.views.generic.edit import FormView
@@ -37,7 +40,60 @@ def hodhome(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['teacher'])
 def teachhome(request):
-    return render(request,'../templates/teacher/teacher.html')
+    classteacherof = Classes.objects.get(class_teacher = request.user.id)
+    allstudents = Student.objects.filter(classes=classteacherof)
+
+    context = {
+        "classteacherof":classteacherof,
+        "allstudents": allstudents
+    }
+    return render(request,'../templates/teacher/teacher.html',context)
+
+def teacherComment(request,id):
+    classes = Classes.objects.get(class_teacher = request.user.id)
+    student = get_object_or_404(Student,pk=id)
+    subjects = student.subjects.all
+    marks = Results.objects.filter(student_id=student,classes=classes)
+
+    my_marks = []
+    for mark in marks:
+        my_marks.append(mark.mean_marks)
+    all_marks = sum(my_marks)
+    
+    my_points = []
+    for mark in marks:
+        my_points.append(mark.points)
+    if len(my_points) != 0:
+        all_points = sum(my_points) / len(my_points)
+    else:
+        all_points =1
+
+    all_students = Student.objects.filter(classes=classes)
+    studentNum = all_students.count()
+
+    try:
+        studentreport = report.objects.get(classes_id = classes ,student=student)
+    except:
+        studentreport = report.objects.create(classes_id = classes ,student=student)
+    comm = request.GET.get("tcomments")
+
+    studentreport.t_comments = comm
+    studentreport.save()    
+    context = {
+        "marks":marks,
+        "current_student":student,
+        "classes":classes,
+        "subjects":subjects,
+        "marks": marks,
+        "all_marks":all_marks,
+        "all_points":all_points,
+        "studentNum":studentNum
+        
+    }
+   
+    return render(request,"teacher/studentreport.html",context)
+
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
@@ -319,10 +375,58 @@ def load_subjects(request):
 @login_required(login_url='login')
 def allstudents(request,id):
     all_students = Student.objects.filter(classes=id).all()
+    request.session['class_id'] = id
     
     return render(request,"hod/allstudents.html",{"all_students":all_students})
 
+@allowed_users(allowed_roles=['admin'])   
+@login_required(login_url='login')
+def principal_comment(request,id):
+    classes =request.session.get('class_id')
+    student = get_object_or_404(Student,pk=id)
+    subjects = student.subjects.all
+    marks = Results.objects.filter(student_id=student,classes=classes)
 
+    my_marks = []
+    for mark in marks:
+        my_marks.append(mark.mean_marks)
+    all_marks = sum(my_marks)
+    
+    my_points = []
+    for mark in marks:
+        my_points.append(mark.points)
+    if len(my_points) != 0:
+        all_points = sum(my_points) / len(my_points)
+    else:
+        all_points =1
+
+    all_students = Student.objects.filter(classes=classes)
+    studentNum = all_students.count()
+
+    try:
+        studentreport = report.objects.get(classes_id = classes ,student=student)
+    except:
+        studentreport = report.objects.create(classes_id = classes ,student=student)
+    comm = request.GET.get("pcomments")
+
+    studentreport.p_comments = comm
+    studentreport.save()    
+    context = {
+        "marks":marks,
+        "current_student":student,
+        "classes":classes,
+        "subjects":subjects,
+        "marks": marks,
+        "all_marks":all_marks,
+        "all_points":all_points,
+        "studentNum":studentNum
+        
+    }
+   
+    return render(request,"hod/studentreport.html",context)
+
+# def generateStudentReports(request,id1,id2):
+#     student_results = 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def addSubject(request):
@@ -402,6 +506,16 @@ def addmarks(request,id):
             marks.classes = current_class
             marks.teacher = request.user.username
             marks.save()
+            ############### 
+            smarks = Results.objects.get(student_id=id,classes=current_class)
+            try:
+                studentreport = report.objects.get(classes = current_class ,student=student)
+            except:
+                studentreport = report.objects.create(classes = current_class ,student=student)
+
+            
+            studentreport.all_subjects.add(smarks)
+            studentreport.save()
 
             marks = Results.objects.filter(student_id=id,classes=current_class)
             my_marks = []
@@ -412,6 +526,8 @@ def addmarks(request,id):
             student.total_marks = all_marks
             student.save()
 
+            for student_marks in marks:
+                print(student_marks)
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
@@ -427,6 +543,7 @@ def student_positions(request,id):
         student.save()
         
     return redirect("allclasses")
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def fees(request,id):
@@ -456,6 +573,7 @@ def editmarks(request,id):
     result = Results.objects.get(student=student,subjects__id=subjectid)
     
     current_class = subject.classes
+    
     marks = addResultsForm()
     if request.method == 'POST':
         form = addResultsForm(request.POST, request.FILES, instance=result)
@@ -475,6 +593,16 @@ def editmarks(request,id):
 
             student.total_marks = all_marks
             student.save()
+            ############### 
+            smarks = Results.objects.get(student_id=id,classes=current_class)
+            try:
+                studentreport = report.objects.get(classes = current_class ,student=student)
+            except:
+                studentreport = report.objects.create(classes = current_class ,student=student)
+
+            
+            studentreport.all_subjects.add(smarks)
+            studentreport.save()
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm(instance=result)  
@@ -511,7 +639,7 @@ def studentInfo(request):
 
     
     all_students = Student.objects.filter(classes=classes)
-    studentNum = all_students.count()
+    studentNum = len(all_students)
     if studentNum <= 0:
         studentNum = 1
     
@@ -587,6 +715,7 @@ def reportform(request):
     
     all_students = Student.objects.filter(classes=classes)
     studentNum = all_students.count()
+   
     
 
     # #mean_marks 
@@ -612,6 +741,9 @@ def reportform(request):
         selectedClass = get_object_or_404(Classes,pk=classes)
     except:
         selectedClass = get_object_or_404(Classes,pk=classes.id)
+
+    ######
+    studentreport = report.objects.get(student_id=current_student,classes=classes)
     
     context = {
         "current_student":current_student,
@@ -622,7 +754,8 @@ def reportform(request):
         "all_marks":all_marks,
         "all_points":all_points,
         "selectedClass":selectedClass,
-        "studentNum":studentNum
+        "studentNum":studentNum,
+        "studentreport":studentreport
         
         }
 
