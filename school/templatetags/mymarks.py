@@ -11,11 +11,7 @@ def student_marks(subject_id,student_id):
     
     return Results.objects.filter(student=student_id,subjects=subject_id)
 
-@register.simple_tag
-def principal_comment(class_id,student_id):
-    
-    s_results = Results.objects.filter(student=student_id,clases=class_id)
-    
+
 
 
 student_list = {}
@@ -71,7 +67,7 @@ def mean_marks(current_student,classes):
         return 0
     
 @register.simple_tag 
-def comments(subject_grade):
+def subjectcomments(subject_grade):
     if subject_grade == "A" or subject_grade == "A-":
         return "Excellent"
     elif subject_grade == "B" or subject_grade == "B+":

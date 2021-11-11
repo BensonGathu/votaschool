@@ -256,10 +256,16 @@ class addFeesForm(forms.ModelForm):
     class Meta:
         model = Fees
         fields = ['amount_payable','amount_paid']
-class addCommentForm(forms.ModelForm):
+
+class addPrincipalCommentForm(forms.ModelForm):
     class Meta:
         models = Results
-        fields = ['t']
+        fields = ['p_comments']
+
+class addClassTCommentForm(forms.ModelForm):
+    class Meta:
+        models = Results
+        fields = ['t_comments']
 
 # class addFeeForm(forms.ModelForm):
 #     class Meta:

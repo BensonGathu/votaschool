@@ -4,5 +4,14 @@
 {% load bootstrap5 %}
 {% load static%}
 
+{%block content%}
 
-{ %endblock% }
+{{classteacherof}} <br>
+{% for student in allstudents %}
+
+{{student}} <a href="{% url 'teacher_comment' student.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Results</a> <br>
+
+{%endfor%}
+
+
+{%endblock%}

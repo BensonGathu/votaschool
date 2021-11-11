@@ -81,25 +81,6 @@ class AcademicYear(models.Model):
     def saveacademicyear(self):
         self.save()
         
-classes =(
-    ("Form One", "Form One"),
-    ("Form Two", "Form Two"),
-    ("Form Three", "Form Three"),
-    ("Form Four ","Form Four"),
-)
-class Classes(models.Model):
-    name = models.CharField(choices=classes,max_length=1000)
-    year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "{}--{}".format(self.name,self.year)
-
-    class Meta:
-        unique_together=("name", "year")
-
-    def saveclasses(self):
-        self.save()
 
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -134,6 +115,28 @@ class Teacher(models.Model):
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
+
+classes =(
+    ("Form One", "Form One"),
+    ("Form Two", "Form Two"),
+    ("Form Three", "Form Three"),
+    ("Form Four ","Form Four"),
+)
+class Classes(models.Model):
+    name = models.CharField(choices=classes,max_length=1000)
+    year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"))
+
+    def __str__(self):
+        return "{}--{}".format(self.name,self.year)
+
+    class Meta:
+        unique_together=("name", "year")
+
+    def saveclasses(self):
+        self.save()
+
 
 subject_names = (
     ("English", "English"),
@@ -218,8 +221,6 @@ class Results(models.Model):
     # comments = models.CharField(max_length=300)
     teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
-    p_comments = models.CharField(max_length=100,null=True,blank=True)
-    t_comments = models.CharField(max_length=100,null=True,blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     
@@ -310,9 +311,12 @@ class Results(models.Model):
         return cls.objects.filter(subjects__pk=subject_id).all()
         
 class report(models.Model):
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     all_subjects = models.ManyToManyField(Results)
     date_created = models.DateTimeField(auto_now_add=True)
+    p_comments = models.CharField(max_length=100,null=True,blank=True)
+    t_comments = models.CharField(max_length=100,null=True,blank=True)
     def mean(self):
         # marks = 0
         # for mark in self.all_subjects:
@@ -321,14 +325,19 @@ class report(models.Model):
         # return self.objects.all().aggregate(Avg('all_subjects'))
         #return self.all_subjects.add()
         pass
+    class Meta:
+        unique_together=("classes", "student")
+
     def __str__(self):
-        return str(self.mean())
+        return "{} - {}".format(self.student,self.classes)
 
 class Fees(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     amount_payable = models.FloatField()
     amount_paid  = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
+
+ 
 
     def get_balance(self):
         return str(self.amount_payable - self.amount_paid)
