@@ -32,7 +32,7 @@ def hodhome(request):
         'total_teachers': total_teachers,
         'all_subjects': all_subjects
         
-    }
+    } 
     return render(request,'../templates/hod/hod.html', context)
 
 
@@ -322,7 +322,7 @@ def editprofile(request,id):
                     'p_form': p_form,
                     'current_user': current_user,
                     }
-            return render(request, 'student/studentprofile.html', context)
+            return render(request, 'auth/teacherprofile.html', context)
 
     if current_user.is_student:
         student = get_object_or_404(Student,pk=current_user.id)
@@ -378,6 +378,16 @@ def allstudents(request,id):
     request.session['class_id'] = id
     
     return render(request,"hod/allstudents.html",{"all_students":all_students})
+
+@login_required(login_url='login')
+def allteachers(request):
+    all_teachers = Teacher.objects.all()
+    context = {
+        "all_teachers":all_teachers
+    }
+
+    
+    return render(request,"hod/allteachers.html",context)
 
 @allowed_users(allowed_roles=['admin'])   
 @login_required(login_url='login')
@@ -705,8 +715,19 @@ def reportform(request):
         if pc.classes not in p_classes:
             p_classes.append(pc.classes)
         
+    print(p_classes)
+    for i,student in enumerate(p_classes):
+         
+        print(i)
+    print(p_classes[-2])
+    #get previous class report 
+
+    try:
+        p_report = report.objects.get(classes_id = p_classes[-2] ,student=current_student)
+        
+    except:
+        pass 
     #get total marks
- 
     my_marks = []
     for mark in marks:
         my_marks.append(mark.mean_marks)
@@ -755,7 +776,8 @@ def reportform(request):
         "all_points":all_points,
         "selectedClass":selectedClass,
         "studentNum":studentNum,
-        "studentreport":studentreport
+        "studentreport":studentreport,
+        "p_report":p_report,
         
         }
 

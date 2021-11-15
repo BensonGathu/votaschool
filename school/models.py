@@ -330,6 +330,7 @@ class report(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.student,self.classes)
+    
 
 class Fees(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
