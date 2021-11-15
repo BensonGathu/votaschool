@@ -32,7 +32,7 @@ def hodhome(request):
         'total_teachers': total_teachers,
         'all_subjects': all_subjects
         
-    }
+    } 
     return render(request,'../templates/hod/hod.html', context)
 
 
@@ -322,7 +322,7 @@ def editprofile(request,id):
                     'p_form': p_form,
                     'current_user': current_user,
                     }
-            return render(request, 'student/studentprofile.html', context)
+            return render(request, 'auth/teacherprofile.html', context)
 
     if current_user.is_student:
         student = get_object_or_404(Student,pk=current_user.id)
@@ -378,6 +378,16 @@ def allstudents(request,id):
     request.session['class_id'] = id
     
     return render(request,"hod/allstudents.html",{"all_students":all_students})
+
+@login_required(login_url='login')
+def allteachers(request):
+    all_teachers = Teacher.objects.all()
+    context = {
+        "all_teachers":all_teachers
+    }
+
+    
+    return render(request,"hod/allteachers.html",context)
 
 @allowed_users(allowed_roles=['admin'])   
 @login_required(login_url='login')
@@ -523,8 +533,9 @@ def addmarks(request,id):
                 my_marks.append(mark.mean_marks)
             all_marks = sum(my_marks)
 
-            student.total_marks = all_marks
-            student.save()
+            s_report = report.objects.get(classes_id = current_class ,student=student)
+            s_report.total_marks = all_marks
+            s_report.save()
 
             for student_marks in marks:
                 print(student_marks)
@@ -536,11 +547,11 @@ def addmarks(request,id):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def student_positions(request,id):
-    all_students = Student.objects.filter(classes=id).order_by("-total_marks")
+    all_reports = report.objects.filter(classes=id).order_by("-total_marks")
     
-    for i,student in enumerate(all_students):
-        student.position = i+1 
-        student.save()
+    for i,reports in enumerate(all_reports):
+        reports.position = i+1 
+        reports.save()
         
     return redirect("allclasses")
 
@@ -590,9 +601,9 @@ def editmarks(request,id):
             for mark in marks:
                 my_marks.append(mark.mean_marks)
             all_marks = sum(my_marks)
-
-            student.total_marks = all_marks
-            student.save()
+            s_report = report.objects.get(classes_id = current_class ,student=student)
+            s_report.total_marks = all_marks
+            s_report.save()
             ############### 
             smarks = Results.objects.get(student_id=id,classes=current_class)
             try:
@@ -665,9 +676,17 @@ def studentInfo(request):
 
     try:
         selectedClass = get_object_or_404(Classes,pk=classes)
+        
     except:
         selectedClass = get_object_or_404(Classes,pk=classes.id)
-    
+       
+    try:
+        p_report = report.objects.get(classes_id = selectedClass,student=current_student)
+        c_report = report.objects.get(classes_id = classes ,student=current_student)
+    except:
+        p_report = report.objects.get(classes_id = selectedClass,student=current_student)
+        c_report = report.objects.get(classes_id = classes.id ,student=current_student)
+
     context = {
         "current_student":current_student,
         "classes":classes,
@@ -677,7 +696,10 @@ def studentInfo(request):
         "all_marks":all_marks,
         "all_points":all_points,
         "selectedClass":selectedClass,
-        "studentNum":studentNum
+        "studentNum":studentNum,
+        "p_report":p_report,
+        "c_report":c_report
+        
         
         }
 
@@ -705,8 +727,20 @@ def reportform(request):
         if pc.classes not in p_classes:
             p_classes.append(pc.classes)
         
+  
+    #get previous class report 
+
+    try:
+        p_report = report.objects.get(classes_id = p_classes[-2] ,student=current_student)
+        print(p_report)
+    except:
+        pass 
+    try:
+        c_report = report.objects.get(classes_id = classes ,student=current_student)
+        print(c_report)
+    except:
+        pass
     #get total marks
- 
     my_marks = []
     for mark in marks:
         my_marks.append(mark.mean_marks)
@@ -755,7 +789,9 @@ def reportform(request):
         "all_points":all_points,
         "selectedClass":selectedClass,
         "studentNum":studentNum,
-        "studentreport":studentreport
+        "studentreport":studentreport,
+        "p_report":p_report,
+        "c_report":c_report
         
         }
 

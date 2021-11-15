@@ -17,17 +17,32 @@
     </div>
     </div>
   </div>
+  <!-- {{p_report.total_marks}} -->
 
-<div class="col-md-6">
-  <div  style="width: 30rem;">
-    <div class="card-body">
-    <div class="card-columns">
-      <h4 class="card-text">Total Marks: {{all_marks}} </h4>
-      <h4 class="card-text">Average Points: {{all_points |floatformat }}</h4> 
-      <h4 class="card-text">Average Grade: {% ov_grade all_points %} </h4>
-      <h4>Mean Marks: {% mean_marks current_student  classes%}%</h4>
-      <h3>Position: {{current_student.position}}/{{studentNum}}</h3>
+  <div class="col-md-3">
+    <div  style="width: 30rem;">
+      <div class="card-body"><h5><strong> Last Term's Results</strong></h5></h4>
+      <div class="card-columns">
+        <h4 class="card-text">Total Marks: {{p_report.total_marks}} </h4>
+        <h4 class="card-text">Average Points: {{p_report.all_points |floatformat }}</h4> 
+        <h4 class="card-text">Average Grade:  {{p_report.ov_grade}}</h4>
+        <h4>Mean Marks: {{p_report.s_mean_marks}}%</h4>
+        <h3>Position: {{p_report.position}}/{{studentNum}}</h3>
+      </div>
+      </div>
     </div>
+  </div>
+  <div class="col-md-3">
+    <div  style="width: 30rem;">
+      <div class="card-body"><h5> <strong> Current Term's Results</strong></h5>
+      <div class="card-columns">
+        <h4 class="card-text">Total Marks: {{all_marks}} </h4>
+        <h4 class="card-text">Average Points: {{all_points |floatformat }}</h4> 
+        <h4 class="card-text">Average Grade: {% ov_grade all_points %} </h4>
+        <h4>Mean Marks: {% mean_marks current_student  classes%}%</h4>
+        <h3>Position: {{c_report.position}}/{{studentNum}}</h3>
+      </div>
+      </div>
     </div>
   </div>
 </div>
