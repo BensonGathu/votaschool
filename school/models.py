@@ -7,6 +7,8 @@ from django.db.models import Count, F, Value,Avg
 from django.db.models.query_utils import subclasses
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
+
+# from school.templatetags.mymarks import mean_marks
 # from django.views.generic.detail import T
 # Create your models here.
 
@@ -179,8 +181,7 @@ class Student(models.Model):
     reg_number = models.CharField(max_length=2000)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
-    total_marks = models.FloatField(blank=True,null=True)
-    position = models.IntegerField(blank=True,null=True)
+   
 
 
     def __str__(self):
@@ -317,6 +318,39 @@ class report(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     p_comments = models.CharField(max_length=100,null=True,blank=True)
     t_comments = models.CharField(max_length=100,null=True,blank=True)
+    total_marks = models.FloatField(blank=True,null=True)
+    position = models.IntegerField(blank=True,null=True)
+    s_mean_marks = models.IntegerField(blank=True,null=True)
+    all_points = models.FloatField(blank=True,null=True)
+
+
+    @property
+    def ov_grade(self):
+        if self.all_points == 12 :
+            return "A"
+        elif self.all_points >= 11:
+            return "A-"
+        elif self.all_points >= 10:
+            return "B+"
+        elif self.all_points >= 9:
+            return "B"
+        elif self.all_points >= 8:
+            return "B-"
+        elif self.all_points >= 7:
+            return "C+"
+        elif self.all_points >= 6:
+            return "C"
+        elif self.all_points >= 5:
+            return "C-"
+        elif self.all_points >= 4:
+            return "D+"
+        elif self.all_points >= 3:
+            return "D"
+        elif self.all_points >= 2:
+            return "D-"
+        elif self.all_points >= 0:
+            return "E"
+
     def mean(self):
         # marks = 0
         # for mark in self.all_subjects:
