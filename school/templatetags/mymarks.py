@@ -1,7 +1,7 @@
 from django import template
 
 from school.views import allstudents, teacher
-from school.models import Results,Student,report
+from school.models import Results,Student,report,subjectInfo
 
 register = template.Library()
 
@@ -105,3 +105,29 @@ def class_position(classes,stud_mean):
 def all_students(classes):
     students = Student.objects.filter(classes=classes)
     return students
+
+
+@register.simple_tag
+def generate_subject_position(subject,student,meanmarks):
+
+    try:
+        studentsubjectInfo = subjectInfo.objects.get(subject=subject ,student=student)
+    except:
+        studentsubjectInfo = subjectInfo.objects.create(subject=subject ,student=student)
+    
+    studentsubjectInfo.mean_marks = meanmarks
+    studentsubjectInfo.save()
+
+@register.simple_tag
+def get_subject_position(subject,student):
+    try: 
+
+        studentsubjectInfo = subjectInfo.objects.get(subject_id=subject ,student_id=student)  
+    except:
+        return 0
+        
+    return studentsubjectInfo.position
+   
+    # for subjectinformation in studentsubjectInfo:
+    #     print("Gathu")
+    #     return subjectinformation.position

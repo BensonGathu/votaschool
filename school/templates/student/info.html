@@ -66,6 +66,7 @@
               <th scope="col">End Term</th>
               <th scope="col">Mean Marks</th>
               <th scope="col">Mean Grade</th>
+              <th scope="col">Position</th>
               <th scope="col">Comments</th>
               <th scope="col">Teacher</th>
               
@@ -85,6 +86,7 @@
                   <td> {{mark.endterm}}  </td>
                   <td>  {{mark.mean_marks}} </td>
                   <td> {{mark.grade}}</td>
+                  <td> <span>{%get_subject_position mark.subjects current_student%}</span> </td>
                   <td><span>{% subjectcomments mark.grade%}</span></td>
                   <td> {{mark.teacher}}</td>
                   
