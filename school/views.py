@@ -6,6 +6,8 @@ from django.db.models.query import InstanceCheckMeta
 from django.db.models.query_utils import PathInfo
 from django.shortcuts import render,redirect,get_object_or_404
 
+# from school.templatetags.mymarks import all_students
+
 # from school.templatetags.mymarks import comments
 from. forms import *
 from .models import *
@@ -365,9 +367,9 @@ def delprofile(request,id):
 @login_required(login_url='login')
 def load_subjects(request):
     class_id = request.GET.get('classes_id')
-    print(class_id)
+    
     subjects = Subjects.objects.filter(classes_id=class_id)
-    print(subjects)
+    
     return render(request,'../templates/loadsubjects.html',{"subjects":subjects})
 
 
@@ -537,8 +539,8 @@ def addmarks(request,id):
             s_report.total_marks = all_marks
             s_report.save()
 
-            for student_marks in marks:
-                print(student_marks)
+            # for student_marks in marks:
+            #     print(student_marks)
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
@@ -554,6 +556,16 @@ def student_positions(request,id):
         reports.save()
         
     return redirect("allclasses")
+
+@allowed_users(allowed_roles=['teacher'])
+def student_subject_positions(request,id):
+    all_info = subjectInfo.objects.filter(subject=id).order_by("-mean_marks")
+    
+    for i,info in enumerate(all_info):
+        info.position = i+1 
+        info.save()
+        
+    return redirect("students",id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -632,7 +644,7 @@ def studentInfo(request):
         classes = current_student.classes
     subjects = current_student.subjects.all
     marks = Results.objects.filter(student_id=current_student,classes=classes)
-
+    
 
     #Get previous classes add them into a list then push them to the frontend
     previous_results = Results.objects.filter(student_id = current_student)
@@ -647,8 +659,11 @@ def studentInfo(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
+   
 
-    
+ 
+
+ 
     all_students = Student.objects.filter(classes=classes)
     studentNum = len(all_students)
     if studentNum <= 0:
@@ -687,6 +702,7 @@ def studentInfo(request):
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes.id ,student=current_student)
 
+    
     context = {
         "current_student":current_student,
         "classes":classes,
@@ -732,12 +748,12 @@ def reportform(request):
 
     try:
         p_report = report.objects.get(classes_id = p_classes[-2] ,student=current_student)
-        print(p_report)
+      
     except:
         pass 
     try:
         c_report = report.objects.get(classes_id = classes ,student=current_student)
-        print(c_report)
+       
     except:
         pass
     #get total marks

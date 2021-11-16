@@ -31,6 +31,7 @@ urlpatterns =[
     path("subject/<int:id>/",views.subject,name="subject"),
     path("addresults/",views.addresults,name="addresults"),
     path("getposition/<int:id>/",views.student_positions,name="getposition"),
+    path("getsubjectposition/<int:id>/",views.student_subject_positions,name="studentsubjectpositions"),
     # path("subjectdetails/<int:id>/",views.subjectdetails,name="subjectdetails"),
     # path("create-user/",views.UserCreateView.as_view(),name="createuser"),
     # path("create-student/<int:id>/",views.StudentView.as_view(),name="create-student"),
