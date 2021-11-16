@@ -17,7 +17,10 @@ urlpatterns =[
     path('profile/',views.profile,name="profile"),
     path('accounts/login/',views.loginPage,name="login"),
     path('logout/', views.logoutUser, name='logout'),
-    path('allstudents',views.allstudents,name="allstudents"),  
+    path('allstudents/<int:id>',views.allstudents,name="allstudents"),  
+    path("editprofile/<int:id>",views.editprofile,name="editprofile"),
+    path("delprofile/<int:id>",views.delprofile,name="delprofile"),
+    path("addfees/<int:id>/",views.fees,name="addfees"),
     # path("addteacher",views.addTeacher,name="addteacher"),
     # path("addstudent",views.addStudent,name="addstudent"),
     path("addsubject",views.addSubject,name="addsubject"), 
@@ -35,7 +38,8 @@ urlpatterns =[
     path("students/<int:id>",views.Students,name="students"),
     path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
     path("editmarks/<int:id>/",views.editmarks,name="editmarks"),
-    
+    path("admineditprofile/<int:id>/",views.admineditprofile,name="admineditprofile"),
+    path("allteachers/", views.allteachers, name="allteachers"),
 
     #student urls
     path("studentinfo/",views.studentInfo,name="studentinfo"),

@@ -2,6 +2,8 @@
 {% block content %}
 
 <div class="container">
+    <h1>VOTA SECONDARY SCHOOL</h1>
+    <br>
     <div class="row">
         <div class="col-lg-6">
             <!-- small box -->
@@ -28,10 +30,38 @@
                 <div class="icon" >
                     <i class="ion ion-stats-bars" ></i>
                 </div>
-                <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{% url 'allteachers' %}" class="btn btn-warning">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>  
+<br>
+    <div >
+       
+        <div class="card">
+    
+            <h4 class="card-title"><b>School Motto:</b></h4>
+            <p class="card-body">Arise and Shine</p>
+        </div>
+        <br>
+        <div class="card">
+    
+            <h4 class="card-title"><b>Mission:</b></h4>
+            <p class="card-body">To provide a sipportive envoronment for quality teaching, self discipline, motivation and excellence</p>
+        </div>
+        <br>
+        <div class="card">
+    
+            <h4 class="card-title"><b>Vision:</b></h4>
+            <p class="card-body">To be an academic centre commited to discipline and excellence</p>
+        </div>
+        <br>
+        <div class="card">
+    
+            <h4 class="card-title"><b>Bible Verse:</b></h4>
+            <p class="card-body">No weapon formed against me shall prosper in Jesus name</p>
+        </div>
+        <br>
+    </div>
 </div>
 
 {%endblock%}

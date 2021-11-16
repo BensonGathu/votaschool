@@ -1,6 +1,6 @@
 from django import template
 
-from school.views import teacher
+from school.views import allstudents, teacher
 from school.models import Results,Student
 
 register = template.Library()
@@ -58,7 +58,10 @@ def mean_marks(current_student,classes):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    return int(all_marks/(len(my_marks)*100) * 100)
+    if len(my_marks) != 0:
+        return int(all_marks/(len(my_marks)*100) * 100)
+    else:
+        return 0
     
 
 @register.simple_tag
@@ -68,3 +71,8 @@ def class_position(classes,stud_mean):
     print(all_students)
 
 
+
+@register.simple_tag
+def all_students(classes):
+    students = Student.objects.filter(classes=classes)
+    return students

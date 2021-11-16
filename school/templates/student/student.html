@@ -1,4 +1,30 @@
 {%extends 'student/studentbase.html'%}
 {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- small box -->
+                <div class="small-box bg-info" style="margin-top: 30px; text-align: center;">
+                    <div class="inner">
+                        {% for fee in fee_info%}
+                        <p ><strong> TOTAL STUDENTS </strong></p>
+                        <h3><strong>{{total_students}} </strong></h3>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="{% url 'allclasses' %}" class="btn btn-warning" >More info <i class="fas fa-arrow-circle-right"></i></a>
+    
+                </div>
+            </div>
+    </div>
 
+
+    {% for fee in fee_info%}
+   <div style="margin-left: 35px;">
+    Term's Fee: {{fee.amount_payable}} <br>
+    Paid: {{fee.amount_paid}} <br>
+    balance: {{fee}}<br>
+</div>
+{% endfor %}
 {%endblock%}
