@@ -42,12 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'school',
     "bootstrap5",
     'bootstrap3',
     'bootstrap4',
     'django_bootstrap5',
     'crispy_forms',
+    'school',
 ]
 
 AUTH_USER_MODEL = 'school.User'

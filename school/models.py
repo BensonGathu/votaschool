@@ -7,6 +7,8 @@ from django.db.models import Count, F, Value,Avg
 from django.db.models.query_utils import subclasses
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
+
+# from school.templatetags.mymarks import mean_marks
 # from django.views.generic.detail import T
 # Create your models here.
 
@@ -81,25 +83,6 @@ class AcademicYear(models.Model):
     def saveacademicyear(self):
         self.save()
         
-classes =(
-    ("Form One", "Form One"),
-    ("Form Two", "Form Two"),
-    ("Form Three", "Form Three"),
-    ("Form Four ","Form Four"),
-)
-class Classes(models.Model):
-    name = models.CharField(choices=classes,max_length=1000)
-    year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "{}--{}".format(self.name,self.year)
-
-    class Meta:
-        unique_together=("name", "year")
-
-    def saveclasses(self):
-        self.save()
 
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
@@ -134,6 +117,28 @@ class Teacher(models.Model):
     @classmethod
     def search_student(cls,staff_number):
         return cls.objects.filter(staff_number=staff_number).user
+
+classes =(
+    ("Form One", "Form One"),
+    ("Form Two", "Form Two"),
+    ("Form Three", "Form Three"),
+    ("Form Four ","Form Four"),
+)
+class Classes(models.Model):
+    name = models.CharField(choices=classes,max_length=1000)
+    year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"))
+
+    def __str__(self):
+        return "{}--{}".format(self.name,self.year)
+
+    class Meta:
+        unique_together=("name", "year")
+
+    def saveclasses(self):
+        self.save()
+
 
 subject_names = (
     ("English", "English"),
@@ -176,8 +181,7 @@ class Student(models.Model):
     reg_number = models.CharField(max_length=2000)
     hse = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
-    total_marks = models.FloatField(blank=True,null=True)
-    position = models.IntegerField(blank=True,null=True)
+   
 
 
     def __str__(self):
@@ -215,7 +219,7 @@ class Results(models.Model):
     subjects = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name="results")
     exam1 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
     exam2 = models.FloatField(validators=[MaxValueValidator(30),MinValueValidator(0)],default=0)
-    comments = models.CharField(max_length=300)
+    # comments = models.CharField(max_length=300)
     teacher = models.CharField(max_length=300)
     endterm = models.FloatField(validators=[MaxValueValidator(70),MinValueValidator(0)],default=0)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -273,6 +277,8 @@ class Results(models.Model):
             return "D-"
         elif  gde >= 0:
             return "E"
+
+
     @property
     def points(self):
         grade = self.grade
@@ -306,9 +312,45 @@ class Results(models.Model):
         return cls.objects.filter(subjects__pk=subject_id).all()
         
 class report(models.Model):
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     all_subjects = models.ManyToManyField(Results)
     date_created = models.DateTimeField(auto_now_add=True)
+    p_comments = models.CharField(max_length=100,null=True,blank=True)
+    t_comments = models.CharField(max_length=100,null=True,blank=True)
+    total_marks = models.FloatField(blank=True,null=True)
+    position = models.IntegerField(blank=True,null=True)
+    s_mean_marks = models.IntegerField(blank=True,null=True)
+    all_points = models.FloatField(blank=True,null=True)
+
+
+    @property
+    def ov_grade(self):
+        if self.all_points == 12 :
+            return "A"
+        elif self.all_points >= 11:
+            return "A-"
+        elif self.all_points >= 10:
+            return "B+"
+        elif self.all_points >= 9:
+            return "B"
+        elif self.all_points >= 8:
+            return "B-"
+        elif self.all_points >= 7:
+            return "C+"
+        elif self.all_points >= 6:
+            return "C"
+        elif self.all_points >= 5:
+            return "C-"
+        elif self.all_points >= 4:
+            return "D+"
+        elif self.all_points >= 3:
+            return "D"
+        elif self.all_points >= 2:
+            return "D-"
+        elif self.all_points >= 0:
+            return "E"
+
     def mean(self):
         # marks = 0
         # for mark in self.all_subjects:
@@ -317,14 +359,20 @@ class report(models.Model):
         # return self.objects.all().aggregate(Avg('all_subjects'))
         #return self.all_subjects.add()
         pass
+    class Meta:
+        unique_together=("classes", "student")
+
     def __str__(self):
-        return str(self.mean())
+        return "{} - {}".format(self.student,self.classes)
+    
 
 class Fees(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     amount_payable = models.FloatField()
     amount_paid  = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
+
+ 
 
     def get_balance(self):
         return str(self.amount_payable - self.amount_paid)

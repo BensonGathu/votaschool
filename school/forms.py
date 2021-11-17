@@ -250,12 +250,22 @@ class addClassForm(forms.ModelForm):
 class addResultsForm(forms.ModelForm):
     class Meta:
         model = Results
-        fields = ['exam1','exam2','endterm','comments']
+        fields = ['exam1','exam2','endterm']
+
 class addFeesForm(forms.ModelForm):
     class Meta:
         model = Fees
         fields = ['amount_payable','amount_paid']
 
+class addPrincipalCommentForm(forms.ModelForm):
+    class Meta:
+        models = Results
+        fields = ['p_comments']
+
+class addClassTCommentForm(forms.ModelForm):
+    class Meta:
+        models = Results
+        fields = ['t_comments']
 
 # class addFeeForm(forms.ModelForm):
 #     class Meta:

@@ -1,7 +1,7 @@
 from django import template
 
 from school.views import allstudents, teacher
-from school.models import Results,Student
+from school.models import Results,Student,report
 
 register = template.Library()
 
@@ -10,6 +10,9 @@ register = template.Library()
 def student_marks(subject_id,student_id):
     
     return Results.objects.filter(student=student_id,subjects=subject_id)
+
+
+
 
 student_list = {}
 @register.simple_tag
@@ -54,15 +57,41 @@ my_marks = []
 def mean_marks(current_student,classes):
     my_marks.clear()
     marks = Results.objects.filter(student_id=current_student,classes=classes)
+    try:
+        studentreport = report.objects.get(student=current_student,classes=classes)
+    except:
+        studentreport = report.objects.create(student=current_student,classes=classes)
+    
+    print(studentreport)
   
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
     if len(my_marks) != 0:
+        studentreport.s_mean_marks = int(all_marks/(len(my_marks)*100) * 100)
+        studentreport.save()
         return int(all_marks/(len(my_marks)*100) * 100)
     else:
+        studentreport.s_mean_marks = 0
+        studentreport.save()
         return 0
+   
     
+@register.simple_tag 
+def subjectcomments(subject_grade):
+    if subject_grade == "A" or subject_grade == "A-":
+        return "Excellent"
+    elif subject_grade == "B" or subject_grade == "B+":
+        return "Very Good"
+    elif subject_grade == "C+" or subject_grade == "B-":
+        return "Good"
+    elif subject_grade == "C" or subject_grade == "C-":
+        return "Fair"
+    elif subject_grade == "D" or subject_grade == "D+":
+        return "Improve"
+    elif subject_grade == "E" or subject_grade == "D-":
+        return "Poor"
+
 
 @register.simple_tag
 def class_position(classes,stud_mean):
