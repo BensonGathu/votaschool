@@ -314,8 +314,8 @@ class Results(models.Model):
         return cls.objects.filter(subjects__pk=subject_id).all()
         
 class report(models.Model):
-    classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="class_report")
+    student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="student_report")
     all_subjects = models.ManyToManyField(Results)
     date_created = models.DateTimeField(auto_now_add=True)
     p_comments = models.CharField(max_length=100,null=True,blank=True)
