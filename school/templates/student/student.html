@@ -1,10 +1,36 @@
 {%extends 'student/studentbase.html'%}
+{% load static %}
 {% block content %}
-    {% for fee in fee_info%}
-   <div style="margin-left: 35px;">
-    Term's Fee: {{fee.amount_payable}} <br>
-    Paid: {{fee.amount_paid}} <br>
-    balance: {{fee}}<br>
-</div>
+    <div class="container">
+        <div class="row">
+            {% for fee in fee_info%}
+            <div class="col-sm-4">
+                <!-- small box -->
+                <div class="small-box bg-info" style="margin-top: 30px; text-align: center; height: 50px; width: 300px;">
+                    <div class="inner">
+                       
+                        <p ><strong> Term's Fee: {{fee.amount_payable}} </strong></p>
+                    </div>    
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <!-- small box -->
+                <div class="small-box bg-info" style="margin-top: 30px; text-align: center; height: 50px; width: 300px;">
+                    <div class="inner">
+                        <p ><strong>Paid: {{fee.amount_paid}}</strong></p>
+                    </div>    
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <!-- small box -->
+                <div class="small-box bg-info" style="margin-top: 30px; text-align: center; height: 50px; width: 300px;">
+                    <div class="inner">
+                        <p ><strong>balance: {{fee}}</strong></p>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endfor %}
-{%endblock%}
+{% endblock %}

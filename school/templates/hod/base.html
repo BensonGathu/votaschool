@@ -75,7 +75,7 @@
         <div class="row">
           <div class="col-sm-2">
           {% block sidebar %}
-          <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-dark" style="width: 250px; height: 700px;">
+          <aside class="main-sidebar sidebar-dark-primary elevation-4 bg-dark" style="width: 250px; height: 1000px;">
             <!-- Brand Logo -->
             <a href="{% url 'hodhome' %}" class="brand-link">
                 <span class="brand-text font-weight-light">Admin Panel</span>
@@ -146,6 +146,26 @@
                             </p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                      {% url 'addclasses' as addclasses %}
+                      <a href="{{addclasses}}" class="nav-link {% if addclasses == request.path %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                              Add Classes
+  
+                          </p>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                    {% url 'addacademicyear' as addacademicyear %}
+                    <a href="{{addacademicyear}}" class="nav-link {% if addacademicyear == request.path %} active {% endif %}">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Add Academic year
+
+                        </p>
+                    </a>
+                </li>
                       <li class="nav-item">
                         {% url 'logout' as logout %}
                         <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">

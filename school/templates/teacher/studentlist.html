@@ -16,12 +16,13 @@
                   <th scope="col">First Name</th>
                   <th scope="col">Middle Name</th>
                   <th scope="col">Last Name</th>
-                  <th scope="col">exam 1</th>
+                  <th scope="col">exam 1 </th>
                   <th scope="col">exam 2</th>
                   <th scope="col">end term</th>
                   <th scope="col">Mean Marks</th>
-                  <th scope="col">add marks</th>
-                  <th scope="col">edit marks</th>
+                  <th scope="col">Position</th>
+                  <!-- <th scope="col">add marks</th>
+                  <th scope="col">edit marks</th> -->
 
                 </tr>
               </thead>
@@ -38,20 +39,28 @@
                       <td> <span> {{mark.exam1}} </span></td>
                       <td> <span> {{mark.exam2}} </span></td>
                       <td> <span> {{mark.endterm}}</span> </td>
-                      <td>  <span> {{mark.mean_marks}}</span> </td>
+                      <td> <span> {{mark.mean_marks}}</span> </td>
                       {%generate_subject_position mark.subjects students  mark.mean_marks%}
-                            
+                      <td> <span>{%get_subject_position subject.id students%}</span> </td>
+            
 
                       {% endfor%}
                       
-                      
-                      <td><span><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></span></td>
-                     
+                      {% check_student_report students.user.id students.classes.id as checkstudentreport %}
+                    
+                      {% if checkstudentreport %}
                       <td><span><a href="{% url 'editmarks' students.user.id %}" class="btn btn-primary">edit Marks</a></span></td>
+                      {%else%}
+                      <td><span><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></span></td>
+                      {%endif%}
                       
-                  </tr>
-               
+                      
+                      
+                      
+                 
+                    </tr>
                   {% endfor%}
+               
               </tbody>
         </table>
   </div>
