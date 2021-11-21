@@ -27,6 +27,7 @@ urlpatterns =[
     path("addfees/<int:id>/",views.fees,name="addfees"),
     path("pcomment/<int:id>/",views.principal_comment,name="principal_comment"),
     path("tcomment/<int:id>/",views.teacherComment,name="teacher_comment"),
+    path("addinformation",views.addinformation,name="addinformation"),
     # path("addteacher",views.addTeacher,name="addteacher"),
     # path("addstudent",views.addStudent,name="addstudent"),
     path("addsubject",views.addSubject,name="addsubject"), 

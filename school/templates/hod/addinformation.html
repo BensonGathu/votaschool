@@ -1,0 +1,20 @@
+{%extends 'hod/base.html'%}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<div class="container  w-75 p-3">
+<form  action="" method="post" >
+    {% csrf_token %}
+    {% bootstrap_form form %}
+
+    <div class="form-group" >
+      <input type="submit" class="btn btn-primary btn-sm" value="Add">
+    </div>
+
+    <input type="hidden" name="next" value="{{next}}">
+
+  </form>
+</div>
+  <!-- {{all_subjects}} -->
+  {%endblock%}

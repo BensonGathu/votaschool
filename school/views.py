@@ -7,7 +7,7 @@ from django.db.models.query_utils import PathInfo
 from django.shortcuts import render,redirect,get_object_or_404
 
 # from school.templatetags.mymarks import all_students
-
+#######
 # from school.templatetags.mymarks import comments
 from. forms import *
 from .models import *
@@ -21,7 +21,13 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 def home(request):
-    return render(request,'../templates/home.html')
+    information = Information.objects.all()
+
+    context = {
+        "information":information
+    }
+
+    return render(request,'../templates/home.html',context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -38,7 +44,6 @@ def hodhome(request):
     return render(request,'../templates/hod/hod.html', context)
 
 
-
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['teacher'])
 def teachhome(request):
@@ -46,14 +51,14 @@ def teachhome(request):
         classteacherof = Classes.objects.get(class_teacher = request.user.id)
     except:
         classteacherof = 0
-        
+    print(classteacherof)
     allstudents = Student.objects.filter(classes=classteacherof)
-    currentclass = get_object_or_404(Classes,pk=classteacherof.id)
-  
+    # currentclass = get_object_or_404(Classes,pk=classteacherof)
+    
     context = {
         "classteacherof":classteacherof,
         "allstudents": allstudents,
-        "currentclass":currentclass,
+        # "currentclass":currentclass,
     }
     return render(request,'../templates/teacher/teacher.html',context)
 
@@ -311,6 +316,21 @@ def profile(request):
                     }
             return render(request, 'student/studentprofile.html', context)
   
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def addinformation(request):
+    form = addInformationForm()
+    if request.method == 'POST':
+        form = addInformationForm(request.POST)
+        if form.is_valid():
+            information = form.save(commit=False)
+            information.save()
+        
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addInformationForm()
+
+    return render(request,"hod/addinformation.html",{"form":form})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

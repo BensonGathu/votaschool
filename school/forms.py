@@ -6,7 +6,9 @@ from django.db import transaction
 from django.db.models import fields
 from django.forms import widgets
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
+from bootstrap_datepicker_plus import DatePickerInput
 
 from .models import *
 from school.models import User
@@ -257,15 +259,27 @@ class addFeesForm(forms.ModelForm):
         model = Fees
         fields = ['amount_payable','amount_paid']
 
-class addPrincipalCommentForm(forms.ModelForm):
-    class Meta:
-        models = Results
-        fields = ['p_comments']
 
-class addClassTCommentForm(forms.ModelForm):
+class addInformationForm(forms.ModelForm):
     class Meta:
-        models = Results
-        fields = ['t_comments']
+        model = Information
+        fields = ('title','desc','openingDate','closingDate')
+
+        widgets = {
+      'openingDate':(DatePickerInput(attrs={'placeholder':'YYYY-MM-DD', 'input_format' : '%Y-%m-%d'})),
+      'closingDate':(DatePickerInput(attrs={'placeholder':'YYYY-MM-DD', 'input_format' : '%Y-%m-%d'})),
+    }
+
+
+# class addPrincipalCommentForm(forms.ModelForm):
+#     class Meta:
+#         model = Results
+#         fields = ['p_comments']
+
+# class addClassTCommentForm(forms.ModelForm):
+#     class Meta:
+#         model = Results
+#         fields = ['t_comments']
 
 # class addFeeForm(forms.ModelForm):
 #     class Meta:
