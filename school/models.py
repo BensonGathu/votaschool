@@ -8,6 +8,8 @@ from django.db.models.query_utils import subclasses
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 
+# from school.templatetags.mymarks import mean_marks, position
+
 # from school.templatetags.mymarks import mean_marks
 # from django.views.generic.detail import T
 # Create your models here.
@@ -382,3 +384,18 @@ class Fees(models.Model):
 
     def savesfees(self):
         self.save()
+
+class subjectInfo(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subjects,on_delete=models.CASCADE)
+    position = models.IntegerField(blank=True,null=True)
+    mean_marks = models.IntegerField(blank=True,null=True)
+
+    def __str__(self):
+        return "{} {} {}".format(self.student,self.subject,self.position)
+
+    def savesubjectinfo(self):
+        self.save()
+
+    class Meta:
+        unique_together=("student","subject")

@@ -16,7 +16,7 @@
                   <th scope="col">First Name</th>
                   <th scope="col">Middle Name</th>
                   <th scope="col">Last Name</th>
-                  <th scope="col">exam 1</th>
+                  <th scope="col">exam 1 </th>
                   <th scope="col">exam 2</th>
                   <th scope="col">end term</th>
                   <th scope="col">Mean Marks</th>
@@ -30,28 +30,31 @@
               <tbody>
                   <tr>
                   
-                      <td>{{students.user.first_name}}</td>
-                      <td>{{students.user.middle_name}}</td>
-                      <td>{{students.user.last_name}}</td>
+                      <td><span>{{students.user.first_name}}</span></td>
+                      <td><span>{{students.user.middle_name}}</span></td>
+                      <td><span>{{students.user.last_name}}</span></td>
                       {% student_marks  subject.id students.user.id as marks_students %}
                       {% for mark in marks_students %}
-                      <td> {{mark.exam1}} </td>
-                      <td> {{mark.exam2}} </td>
-                      <td> {{mark.endterm}} </td>
-                      <td>  {{mark.mean_marks}} </td>
+                      <td>  {{mark.exam1}} <span></span></td>
+                      <td> <span> {{mark.exam2}} <span></span></td>
+                      <td> <span> {{mark.endterm}}</span> </td>
+                      <td>  <span> {{mark.mean_marks}}</span> </td>
+                      {%generate_subject_position mark.subjects students  mark.mean_marks%}
                             
 
                       {% endfor%}
                       
                      
-                      <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></td>
-                      <td><a href="{% url 'editmarks' students.user.id %}" class="btn btn-primary">edit Marks</a></td>
+                      <td><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a><span></span></td>
+                      <td><span><a href="{% url 'editmarks' students.user.id %}" class="btn btn-primary">edit Marks</a></span></td>
                   </tr>
                
                   {% endfor%}
               </tbody>
         </table>
   </div>
+
+  <a href="{% url 'studentsubjectpositions' subject.id%}" class="btn btn-primary">Generate Positions</a>
 </div>
 {%endblock%}
 

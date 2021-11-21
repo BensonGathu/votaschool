@@ -4,16 +4,31 @@
 {% load bootstrap5 %}
 {% load mymarks %}
 
-{% for teacher in all_teachers %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Staff Number</th>
+        <th scope="col">Firstname</th>
+        <th scope="col">Middlename</th>
+        <th scope="col">Lastname</th>
+        <th scope="col">edit</th>
+        <th scope="col">delete</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {% for teacher in all_teachers%}
+          <td>{{teacher.staff_number}}</td>
+          <td>{{teacher.user.first_name}}</td>
+          <td>{{teacher.user.middle_name}}</td>
+          <td>{{teacher.user.last_name}}</td>
+          <td><a href="{% url 'editprofile' teacher.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Edit Profile</a></td>
+          
+          <td><a href="{% url 'delprofile' teacher.user.id %}" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Delete Profile</a></td>
+        </tr>
+        {%endfor%}
+      </tbody>
+</table>
             
-{{teacher.user.first_name}} {{teacher.user.middle_name}} {{teacher.user.last_name}}  <a href="{% url 'editprofile' teacher.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Edit Profile</a>
-<a href="{% url 'delprofile' teacher.user.id %}" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Delete Profile</a>
-<br><br>
-
-
-
-{%endfor%}
-
-
 
 {%endblock%}

@@ -16,37 +16,7 @@
 
 {%endfor%}
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Student Profile</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div class="register-form">
-                <form class="user" action="" method="POST" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
-                    {% csrf_token %}
-                   {% bootstrap_form u_form %}
-                   {% bootstrap_form  p_form %}
-                    <button type="submit" class="btn btn-primary btn-user btn-block"> Update
-                        Student</button>
 
-                </form>
-                <br>
-
-               
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
   
  
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

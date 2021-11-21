@@ -9,7 +9,14 @@
 {{classteacherof}} <br>
 {% for student in allstudents %}
 
-{{student}} <a href="{% url 'teacher_comment' student.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Results</a> <br>
+{{student}} 
+{% if student.student_results %} 
+<a href="{% url 'teacher_comment' student.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Results</a> <br>
+got results
+{%else%}
+has no results
+marks not yet added
+{% endif %}
 
 {%endfor%}
 
