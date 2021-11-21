@@ -18,8 +18,11 @@ urlpatterns =[
     path('accounts/login/',views.loginPage,name="login"),
     path('logout/', views.logoutUser, name='logout'),
     path('allstudents/<int:id>',views.allstudents,name="allstudents"),
-    path('allteachers/',views.allteachers,name="allteachers"),   
+    path('allteachers/',views.allteachers,name="allteachers"),
+    path('addclasses/',views.addclasses,name="addclasses"),
+    path('addacademicyear/',views.addacademicyear,name="addacademicyear"),   
     path("editprofile/<int:id>",views.editprofile,name="editprofile"),
+    path("admineditprofile/<int:id>",views.admineditprofile,name="admineditprofile"),
     path("delprofile/<int:id>",views.delprofile,name="delprofile"),
     path("addfees/<int:id>/",views.fees,name="addfees"),
     path("pcomment/<int:id>/",views.principal_comment,name="principal_comment"),
@@ -28,7 +31,6 @@ urlpatterns =[
     # path("addstudent",views.addStudent,name="addstudent"),
     path("addsubject",views.addSubject,name="addsubject"), 
     path("allclasses/",views.classes,name="allclasses"),
-    path("subject/<int:id>/",views.subject,name="subject"),
     path("addresults/",views.addresults,name="addresults"),
     path("getposition/<int:id>/",views.student_positions,name="getposition"),
     path("getsubjectposition/<int:id>/",views.student_subject_positions,name="studentsubjectpositions"),
@@ -42,7 +44,8 @@ urlpatterns =[
     path("students/<int:id>",views.Students,name="students"),
     path("addmarks/<int:id>/",views.addmarks,name="addmarks"),
     path("editmarks/<int:id>/",views.editmarks,name="editmarks"),
-    
+    path("admineditprofile/<int:id>/",views.admineditprofile,name="admineditprofile"),
+    path("allteachers/", views.allteachers, name="allteachers"),
 
     #student urls
     path("studentinfo/",views.studentInfo,name="studentinfo"),

@@ -104,7 +104,7 @@
                             </p>
                         </a>
                     </li>
-
+                    
                       <li class="nav-item">
                         {% url 'login' as login %}
                         <a href="{{login}}" class="nav-link {% if login == request.path %} active {% endif %}">
@@ -115,7 +115,7 @@
                             </p>
                         </a>
                     </li>
-    
+                    
                       <li class="nav-item">
                         {% url 'logout' as logout %}
                         <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
@@ -126,6 +126,7 @@
                             </p>
                         </a>
                     </li>
+                 
                    
         </ul>
         </nav>
