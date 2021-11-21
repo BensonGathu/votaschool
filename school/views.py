@@ -21,7 +21,13 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 def home(request):
-    return render(request,'../templates/home.html')
+    information = Information.objects.all()
+
+    context = {
+        "information":information
+    }
+
+    return render(request,'../templates/home.html',context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -36,7 +42,6 @@ def hodhome(request):
         
     } 
     return render(request,'../templates/hod/hod.html', context)
-
 
 
 @login_required(login_url='login')
@@ -311,6 +316,21 @@ def profile(request):
                     }
             return render(request, 'student/studentprofile.html', context)
   
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def addinformation(request):
+    form = addInformationForm()
+    if request.method == 'POST':
+        form = addInformationForm(request.POST)
+        if form.is_valid():
+            information = form.save(commit=False)
+            information.save()
+        
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addInformationForm()
+
+    return render(request,"hod/addinformation.html",{"form":form})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

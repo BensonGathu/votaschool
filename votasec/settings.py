@@ -48,8 +48,11 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'crispy_forms',
     'school',
+    'bootstrap_datepicker_plus',
 ]
-
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}
 AUTH_USER_MODEL = 'school.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

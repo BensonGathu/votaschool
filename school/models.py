@@ -400,3 +400,13 @@ class subjectInfo(models.Model):
 
     class Meta:
         unique_together=("student","subject")
+
+
+class Information(models.Model):
+    title = models.CharField(max_length=200,blank=True,null=True)
+    desc = models.CharField(max_length=200,blank=True,null=True)
+    openingDate = models.DateField(blank=True,null=True)
+    closingDate = models.DateField(blank=True,null=True)
+
+    def __str__(self):
+        return "{}".format(self.title)
