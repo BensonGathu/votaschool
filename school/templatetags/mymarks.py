@@ -122,7 +122,7 @@ def generate_subject_position(subject,student,meanmarks):
 def get_subject_position(subject,student):
     try: 
 
-        studentsubjectInfo = subjectInfo.objects.get(subject_id=subject ,student_id=student)  
+        studentsubjectInfo = subjectInfo.objects.get(subject_id=subject ,student_id=student)
     except:
         return 0
         
@@ -131,3 +131,11 @@ def get_subject_position(subject,student):
     # for subjectinformation in studentsubjectInfo:
     #     print("Gathu")
     #     return subjectinformation.position
+
+@register.simple_tag
+def check_student_report(student,classes):
+    try:
+        if Results.objects.get(student_id=student,classes=classes):
+            return True
+    except:
+        return False
