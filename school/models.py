@@ -130,7 +130,7 @@ class Classes(models.Model):
     name = models.CharField(choices=classes,max_length=1000)
     year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
-    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"))
+    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"),unique=True)
 
     def __str__(self):
         return "{}--{}".format(self.name,self.year)
@@ -138,6 +138,7 @@ class Classes(models.Model):
     class Meta:
         unique_together=("name", "year")
 
+ 
     def saveclasses(self):
         self.save()
 

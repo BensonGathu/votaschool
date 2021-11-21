@@ -46,14 +46,14 @@ def teachhome(request):
         classteacherof = Classes.objects.get(class_teacher = request.user.id)
     except:
         classteacherof = 0
-        
+    print(classteacherof)
     allstudents = Student.objects.filter(classes=classteacherof)
-    currentclass = get_object_or_404(Classes,pk=classteacherof.id)
-  
+    # currentclass = get_object_or_404(Classes,pk=classteacherof)
+    
     context = {
         "classteacherof":classteacherof,
         "allstudents": allstudents,
-        "currentclass":currentclass,
+        # "currentclass":currentclass,
     }
     return render(request,'../templates/teacher/teacher.html',context)
 
