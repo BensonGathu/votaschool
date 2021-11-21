@@ -42,12 +42,18 @@ def hodhome(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['teacher'])
 def teachhome(request):
-    classteacherof = Classes.objects.get(class_teacher = request.user.id)
+    try:
+        classteacherof = Classes.objects.get(class_teacher = request.user.id)
+    except:
+        classteacherof = 0
+        
     allstudents = Student.objects.filter(classes=classteacherof)
-
+    currentclass = get_object_or_404(Classes,pk=classteacherof.id)
+  
     context = {
         "classteacherof":classteacherof,
-        "allstudents": allstudents
+        "allstudents": allstudents,
+        "currentclass":currentclass,
     }
     return render(request,'../templates/teacher/teacher.html',context)
 
@@ -750,12 +756,14 @@ def reportform(request):
         p_report = report.objects.get(classes_id = p_classes[-2] ,student=current_student)
       
     except:
-        pass 
+        p_report = 0
+        
+
     try:
         c_report = report.objects.get(classes_id = classes ,student=current_student)
        
     except:
-        pass
+        c_report = 0
     #get total marks
     my_marks = []
     for mark in marks:
