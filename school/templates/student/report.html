@@ -18,7 +18,7 @@
     </div>
   </div>
   <!-- {{p_report.total_marks}} -->
-
+  {% if p_report %}
   <div class="col-md-3">
     <div  style="width: 30rem;">
       <div class="card-body"><h5><strong> Last Term's Results</strong></h5></h4>
@@ -32,6 +32,10 @@
       </div>
     </div>
   </div>
+{% else %}
+
+  {%endif%}
+
   <div class="col-md-3">
     <div  style="width: 30rem;">
       <div class="card-body"><h5> <strong> Current Term's Results</strong></h5>

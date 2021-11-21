@@ -42,17 +42,18 @@ def hodhome(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['teacher'])
 def teachhome(request):
-    
     try:
         classteacherof = Classes.objects.get(class_teacher = request.user.id)
-        allstudents = Student.objects.filter(classes=classteacherof)
     except:
-        pass
-    
-
+        classteacherof = 0
+        
+    allstudents = Student.objects.filter(classes=classteacherof)
+    currentclass = get_object_or_404(Classes,pk=classteacherof.id)
+  
     context = {
         "classteacherof":classteacherof,
-        "allstudents": allstudents
+        "allstudents": allstudents,
+        "currentclass":currentclass,
     }
     return render(request,'../templates/teacher/teacher.html',context)
 
@@ -154,7 +155,7 @@ def teacher_registration(request):
             # new_teacher = authenticate(username=form.cleaned_data['username'],
             #                         password=form.cleaned_data['password1'],
             #                         )
-            # return redirect('profile')
+            return redirect('admineditprofile', user.id)
             
     else:
         form = TeacherSignUpForm(request.POST)
@@ -178,7 +179,8 @@ def student_registration(request):
                 request, first_name + ' ' + 'your account was created successfully!')
             
             # login(request, user)
-            # return redirect('profile')
+
+            return redirect('admineditprofile', user.id)
     else:
         form = StudentSignUpForm(request.POST)
 
@@ -365,6 +367,59 @@ def editprofile(request,id):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
+def admineditprofile(request,id):
+    current_user = User.objects.get(id=id)
+    
+    if current_user.is_teacher:
+        teacher = get_object_or_404(Teacher,pk=current_user.id)
+        if request.method == 'POST':
+            u_form = TeacherUpdateForm(
+                request.POST, instance=current_user)
+            p_form = TeacherProfileUpdateForm(
+                request.POST, request.FILES, instance=teacher)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+            
+            return HttpResponseRedirect(request.path_info)   
+        else:
+            u_form = TeacherUpdateForm(instance=current_user)
+            p_form = TeacherProfileUpdateForm(
+                instance=teacher)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/editteacherprofile.html', context)
+
+    if current_user.is_student:
+        student = get_object_or_404(Student,pk=current_user.id)
+        if request.method == 'POST':
+            u_form = StudentUpdateForm(
+                request.POST, instance=current_user)
+            p_form = StudentProfileUpdateForm(
+                request.POST, request.FILES, instance=student)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'Your account has been updated!')
+            
+            return HttpResponseRedirect(request.path_info)   
+        else:
+            u_form = StudentUpdateForm(instance=current_user)
+            p_form = StudentProfileUpdateForm(
+                instance=student)
+
+            context = {'u_form': u_form,
+                    'p_form': p_form,
+                    'current_user': current_user,
+                    }
+            return render(request, 'auth/editstudentprofile.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def delprofile(request,id):
     user_to_del = User.objects.get(id=id)
     user_to_del.delete()
@@ -374,31 +429,6 @@ def delprofile(request,id):
     # else:
     #     pass
 
-def admineditprofile(request,id):
-    student = get_object_or_404(Student,pk=id)
-    if request.method == 'POST':
-        u_form = StudentUpdateForm(
-            request.POST, instance=student)
-        p_form = StudentProfileUpdateForm(
-            request.POST, request.FILES, instance=student)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, f'Your account has been updated!')
-        
-        return HttpResponseRedirect(request.path_info)   
-    else:
-        u_form = StudentUpdateForm(instance=student)
-        p_form = StudentProfileUpdateForm(
-            instance=student)
-
-        context = {'u_form': u_form,
-                'p_form': p_form,
-        
-                }
-        return render(request, 'hod/allstudents.html', context)
-
-    
 
 
 @login_required(login_url='login')
@@ -521,15 +551,43 @@ def addSubject(request):
     return render(request,"hod/addsubject.html",{"form":form,"all_subjects":all_subjects})
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def addclasses(request):
+    form = addClassForm()
+    if request.method == 'POST':
+        form = addClassForm(request.POST)
+        if form.is_valid():
+            classes = form.save(commit=False)
+            classes.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addClassForm()
+
+    return render(request,"hod/addclasses.html",{"form":form})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def addacademicyear(request):
+    form = addAcademicYearForm()
+    if request.method == 'POST':
+        form = addAcademicYearForm(request.POST)
+        if form.is_valid():
+            classes = form.save(commit=False)
+            classes.save()
+        return HttpResponseRedirect(request.path_info) 
+    else:
+        form = addAcademicYearForm()
+
+    return render(request,"hod/addacademicyear.html",{"form":form})
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin','teacher'])
 def classes(request):
     all_classes = Classes.objects.all()
     context = {"all_classes":all_classes}    
     return render(request,"hod/allclasses.html",context)
 
-@login_required(login_url='login')
-def subject(request,id):
-    subject = get_object_or_404(Subjects, pk=id)
-    return render(request,"subject.html",{"subject":subject})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin','teacher'])
@@ -564,6 +622,8 @@ def Students(request,id):
     
     
     return render(request,"teacher/studentlist.html",context)
+
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['teacher'])
@@ -606,7 +666,7 @@ def addmarks(request,id):
 
             # for student_marks in marks:
             #     print(student_marks)
-        return redirect('/students/') 
+        return redirect('/students/', subject.id) 
     else:
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
@@ -691,7 +751,7 @@ def editmarks(request,id):
             
             studentreport.all_subjects.add(smarks)
             studentreport.save()
-        return redirect('/students/<int:id>') 
+        return redirect('students', subject.id) 
     else:
         form = addResultsForm(instance=result)  
     
@@ -763,9 +823,11 @@ def studentInfo(request):
     try:
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes ,student=current_student)
-    except:
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes.id ,student=current_student)
+    except:
+        c_report = 0
+        p_report = 0
 
     
     context = {
@@ -813,14 +875,15 @@ def reportform(request):
 
     try:
         p_report = report.objects.get(classes_id = p_classes[-2] ,student=current_student)
-        return p_report
     except:
-        p_report = report.objects.get(classes_id = classes ,student=current_student)
+        p_report = 0
+        
+
     try:
         c_report = report.objects.get(classes_id = classes ,student=current_student)
        
     except:
-        pass
+        c_report = 0
     #get total marks
     my_marks = []
     for mark in marks:
@@ -879,3 +942,5 @@ def reportform(request):
     
 
     return render(request,"student/report.html",context)
+
+
