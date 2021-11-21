@@ -515,6 +515,11 @@ def addmarks(request,id):
     current_class = subject.classes
     marks = addResultsForm()
 
+    try:
+        stud_marks = Results.objects.get(student_id=id,classes=current_class)
+    except:
+        stud_marks = 0
+
     if request.method == 'POST':
         form = addResultsForm(request.POST)
         if form.is_valid():
@@ -550,7 +555,7 @@ def addmarks(request,id):
         return HttpResponseRedirect(request.path_info) 
     else:
         form = addResultsForm()  
-    return render(request,"teacher/marks.html",{"form":form,"subject":subject})
+    return render(request,"teacher/marks.html",{"form":form,"subject":subject,"stud_marks":stud_marks})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -704,9 +709,11 @@ def studentInfo(request):
     try:
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes ,student=current_student)
-    except:
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes.id ,student=current_student)
+    except:
+        c_report = 0
+        p_report = 0
 
     
     context = {
@@ -797,8 +804,10 @@ def reportform(request):
 
     try:
         selectedClass = get_object_or_404(Classes,pk=classes)
+        
     except:
         selectedClass = get_object_or_404(Classes,pk=classes.id)
+        # selectedClass = classes
 
     ######
     studentreport = report.objects.get(student_id=current_student,classes=classes)

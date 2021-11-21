@@ -44,9 +44,11 @@
 
                       {% endfor%}
                       
-                     
+                      
                       <td><span><a href="{% url 'addmarks' students.user.id %}" class="btn btn-success">add Marks</a></span></td>
+                     
                       <td><span><a href="{% url 'editmarks' students.user.id %}" class="btn btn-primary">edit Marks</a></span></td>
+                      
                   </tr>
                
                   {% endfor%}
