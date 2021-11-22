@@ -98,28 +98,32 @@
                             </p>
                         </a>
                     </li>
-                    
-                      <li class="nav-item">
-                        {% url 'login' as login %}
-                        <a href="{{login}}" class="nav-link {% if login == request.path %} active {% endif %}">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                               Login
-    
-                            </p>
-                        </a>
-                    </li>
-                    
-                      <li class="nav-item">
-                        {% url 'logout' as logout %}
-                        <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                               Logout
-    
-                            </p>
-                        </a>
-                    </li>
+                    {% if request.user is authenticated %}
+                    <li class="nav-item">
+                      {% url 'logout' as logout %}
+                      <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                             Logout
+  
+                          </p>
+                      </a>
+                  </li>
+                    {%else%}
+                    <li class="nav-item">
+                      {% url 'login' as login %}
+                      <a href="{{login}}" class="nav-link {% if login == request.path %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                             Login
+  
+                          </p>
+                      </a>
+                  </li>
+                  
+                    {%endif%}
+               
+                     
                  
                    
         </ul>

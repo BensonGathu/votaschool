@@ -166,6 +166,16 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                  {% url 'addinformation' as addinformation %}
+                  <a href="{{addinformation}}" class="nav-link {% if addinformation == request.path %} active {% endif %}">
+                      <i class="nav-icon fas fa-th"></i>
+                      <p>
+                        Add Notices
+
+                      </p>
+                  </a>
+              </li>
                       <li class="nav-item">
                         {% url 'logout' as logout %}
                         <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">
