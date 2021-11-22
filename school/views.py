@@ -48,12 +48,12 @@ def teachhome(request):
         classteacherof = 0
         
     allstudents = Student.objects.filter(classes=classteacherof)
-    currentclass = get_object_or_404(Classes,pk=classteacherof.id)
+    # currentclass = get_object_or_404(Classes,pk=classteacherof)
   
     context = {
         "classteacherof":classteacherof,
         "allstudents": allstudents,
-        "currentclass":currentclass,
+        # "currentclass":currentclass,
     }
     return render(request,'../templates/teacher/teacher.html',context)
 
@@ -634,6 +634,8 @@ def addmarks(request,id):
     current_class = subject.classes
     marks = addResultsForm()
 
+  
+
     if request.method == 'POST':
         form = addResultsForm(request.POST)
         if form.is_valid():
@@ -666,7 +668,7 @@ def addmarks(request,id):
 
             # for student_marks in marks:
             #     print(student_marks)
-        return redirect('/students/', subject.id) 
+        return redirect('/students/', subject) 
     else:
         form = addResultsForm()  
     return render(request,"teacher/marks.html",{"form":form,"subject":subject})
@@ -751,6 +753,7 @@ def editmarks(request,id):
             
             studentreport.all_subjects.add(smarks)
             studentreport.save()
+            
         return redirect('students', subject.id) 
     else:
         form = addResultsForm(instance=result)  
@@ -917,8 +920,10 @@ def reportform(request):
 
     try:
         selectedClass = get_object_or_404(Classes,pk=classes)
+        
     except:
         selectedClass = get_object_or_404(Classes,pk=classes.id)
+        # selectedClass = classes
 
     ######
     studentreport = report.objects.get(student_id=current_student,classes=classes)
