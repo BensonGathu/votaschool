@@ -131,6 +131,7 @@ class Classes(models.Model):
     year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"),unique=True)
+    is_current = models.BooleanField(default=True)
 
     def __str__(self):
         return "{}--{}".format(self.name,self.year)
@@ -179,6 +180,7 @@ class Subjects(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
+    kcpe_marks = models.IntegerField()
     classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students",blank=True,null=True)
     subjects = models.ManyToManyField(Subjects,related_name="students")
     reg_number = models.CharField(max_length=2000)
@@ -410,3 +412,11 @@ class Information(models.Model):
 
     def __str__(self):
         return "{}".format(self.title)
+
+
+class classRecord(models.Model):
+    classes = models.ForeignKey(Classes,on_delete=models.SET("NoNe"))
+    students = models.ManyToManyField(Student)
+
+    def __str__(self):
+        return "This is the {} class".format(self.classes)

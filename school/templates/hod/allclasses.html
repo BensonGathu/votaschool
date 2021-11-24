@@ -11,7 +11,10 @@
 
             <div class="card">
 
-        {{class}}
+        <div class="row">
+            <div class="col-md-5"> {{class}}</div>
+            <!-- <div class="col-md-5"> <span>&#9989;</span></div> -->
+        </div>
         <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a>
         <a href="{% url 'allstudents' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">All Students</a>
 

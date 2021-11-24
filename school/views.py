@@ -696,6 +696,20 @@ def addmarks(request,id):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def student_positions(request,id):
+    current_class = get_object_or_404(Classes,pk=id)
+    allstudents = Student.objects.filter(classes=current_class)
+    
+    try:
+        record = classRecord.objects.get(classes = current_class)
+    except:
+        record = classRecord.objects.create(classes = current_class)
+
+    for student in allstudents:
+        if student not in record.students.all():
+            record.students.add(student)
+            record.save()
+
+    
     all_reports = report.objects.filter(classes=id).order_by("-total_marks")
     
     for i,reports in enumerate(all_reports):
@@ -807,6 +821,8 @@ def studentInfo(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
+    print(len(my_marks))
+
    
 
  
@@ -912,6 +928,7 @@ def reportform(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
+    print(len(my_marks))
 
     
     all_students = Student.objects.filter(classes=classes)
@@ -969,3 +986,12 @@ def reportform(request):
     return render(request,"student/report.html",context)
 
 
+
+@login_required(login_url='login')
+def donewithclass(request,id):
+    current_class = get_object_or_404(Classes,pk=id)
+    current_class.is_current = False
+    current_class.check = None
+  
+    
+    
