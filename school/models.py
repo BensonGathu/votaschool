@@ -417,6 +417,7 @@ class Information(models.Model):
 class classRecord(models.Model):
     classes = models.ForeignKey(Classes,on_delete=models.SET("NoNe"))
     students = models.ManyToManyField(Student)
+    class_teacher = models.CharField(max_length=200)
 
     def __str__(self):
         return "This is the {} class".format(self.classes)

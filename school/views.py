@@ -697,6 +697,7 @@ def addmarks(request,id):
 @allowed_users(allowed_roles=['admin'])
 def student_positions(request,id):
     current_class = get_object_or_404(Classes,pk=id)
+    current_class_classtr = current_class.class_teacher
     allstudents = Student.objects.filter(classes=current_class)
     
     try:
@@ -708,6 +709,9 @@ def student_positions(request,id):
         if student not in record.students.all():
             record.students.add(student)
             record.save()
+    record.class_teacher = current_class_classtr.user.username
+    record.save()
+        
 
     
     all_reports = report.objects.filter(classes=id).order_by("-total_marks")
