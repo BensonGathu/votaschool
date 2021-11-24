@@ -807,6 +807,8 @@ def studentInfo(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
+    print(len(my_marks))
+
    
 
  
@@ -912,6 +914,7 @@ def reportform(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
+    print(len(my_marks))
 
     
     all_students = Student.objects.filter(classes=classes)
@@ -969,3 +972,20 @@ def reportform(request):
     return render(request,"student/report.html",context)
 
 
+
+@login_required(login_url='login')
+def addClassRecord(request,id):
+    current_class = get_object_or_404(Classes,pk=id)
+    current_class.is_current = False
+    current_class.check = None
+    allstudents = Student.objects.filter(classes=current_class)
+    
+    try:
+        record = classRecord.objects.get(classes = current_class)
+    except:
+        record = classRecord.objects.create(classes = current_class)
+
+    for student in allstudents:
+        record.students.add(student)
+
+    record.save()

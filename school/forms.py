@@ -123,7 +123,7 @@ class StudentUpdateForm(forms.ModelForm):
 class StudentProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['reg_number', 'profile_photo','classes','subjects','hse']
+        fields = ['reg_number','kcpe_marks' ,'profile_photo','classes','subjects','hse']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
