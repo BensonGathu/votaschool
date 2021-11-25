@@ -1,0 +1,35 @@
+{%extends 'teacher/teacherbase.html'%}
+
+{% block content %}
+<div class="container">
+    <h5>TR {{teacher}}</h5>
+    <img src="{{ current_teacher.profile_photo.url }}" class="card-img-top" alt="image" style="height: 150px; width: 250px;">
+
+    <div class="row">
+      {% for subject in subjects %}
+
+        <div class="col-sm-6 ">
+          <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Subject: {{subject.name}}</h5>
+              <p class="card-text">Class: {{subject.classes}}</p>
+              <p class="card-text">ID: {{subject.id}}</p>
+              <a href="{%url 'students' subject.id%}" class="btn btn-primary">Students</a>
+            </div>
+          </div>
+        </div>
+          
+
+        </div>
+        {%endfor%}
+</div>
+
+{%endblock%}
+
+ 
+
+
+    
+    
+    

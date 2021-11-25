@@ -1,0 +1,43 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+
+    <div class="content-section">
+        <div class="container mt-4">
+
+            <div class="text-center">
+                <legend>
+                    <h3>Update Teacher</h3>
+                </legend>
+                <hr>
+                <div class="register-form">
+                        <form class="user" action="" method="POST" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
+                            {% csrf_token %}
+                           {% bootstrap_form u_form %}
+                           {% bootstrap_form  p_form %}
+                            <button type="submit" class="btn btn-primary btn-user btn-block"> Update
+                                Teacher</button>
+    
+                        </form>
+                       
+                    
+                    <br>
+
+                
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

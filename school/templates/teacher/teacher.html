@@ -1,0 +1,25 @@
+{%extends 'teacher/teacherbase.html'%}
+
+{% load bootstrap3 %}
+{% load bootstrap5 %}
+{% load static%}
+
+{%block content%}
+{% if classteacherof %}
+    {{classteacherof}} <br>
+    {% for student in allstudents %}
+
+    {{student}} {% if student.student_report.all  %} 
+    <a href="{% url 'teacher_comment' student.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Results</a> <br>
+    {% else %}
+    <button type="button" class="btn btn-warning">No Results</button>
+
+    {% endif %}
+    {%endfor%}
+
+    {%else%}
+    No class Allocated
+{%endif%}
+
+
+{%endblock%}

@@ -1,0 +1,141 @@
+{%extends 'student/studentbase.html'%}
+{% load static %}
+{% load mymarks %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container">
+<div class="row">
+  <div class="col-md-6">
+  <div style="width: 30rem;">
+    <img src="{{ user.profile_photo.url }}" class="card-img-top" alt="image" style="height: 150px; width: 250px;">
+    <div class="card-body">
+    
+      <b class="card-text">Name: {{current_student}}</b> <br>
+      <b class="card-text">Class: {{current_student.classes}}</b> <br>
+      <b class="card-text">Reg Number: {{current_student.reg_number}}</b> <br>
+      <b class="card-text">KCPE Marks: {{current_student.kcpe_marks}}</b> <br>
+      <b class="card-text">House: {{current_student.hse}}</b> <br>
+    </div>
+    </div>
+  </div>
+
+<div class="col-md-6">
+  <div  style="width: 30rem;">
+    <div class="card-body">
+    
+      <h4 class="card-text">Total Marks: {{all_marks}} </h4>
+      <h4 class="card-text">Average Points: {{all_points |floatformat }}</h4> 
+      <h4 class="card-text">Average Grade: {% ov_grade all_points %} </h4>
+      <h4>Mean Marks: {% mean_marks current_student  classes%}%</h4>
+      <h3>Position: {{c_report.position}}/{{studentNum}}</h3>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<br>
+{% for subject in subjects %}
+    {{subject.name}}
+{% endfor %}
+
+<br>
+<form class="navbar-form navbar-right-align" action="{% url 'studentinfo'%}" >
+  
+  <select name = "selclasses"class="form-control form-control-lg">
+    
+    <option selected>Select class </option>
+      {% for classes in p_classes %}
+      <option value = "{{classes.id}}">{{classes.name}}</option>
+
+      {% endfor %}
+  </select>
+  <input type="submit" value="Search" class="btn btn-default">
+</form> 
+<div class="card">
+    <table class="table">
+      <thead ><tr> <h6 style="text-align:center;"><b>{{selectedClass.name}} results</b> </h6> </tr></thead>
+        <thead>
+          
+            <tr>
+              
+              <th scope="col">Subject</th>
+              <th scope="col">Exam One</th>
+              <th scope="col">Exam Two</th>
+              <th scope="col">End Term</th>
+              <th scope="col">Mean Marks</th>
+              <th scope="col">Mean Grade</th>
+              <th scope="col">Position</th>
+              <th scope="col">Comments</th>
+              <th scope="col">Teacher</th>
+              
+            </tr>
+          
+          </thead>
+         
+         
+          <tbody>
+              <tr>
+
+                {% for mark in marks %}
+               
+                <td> {{mark.subjects.name}}  </td>
+                  <td><span> {{mark.exam1}} </span> </td>
+                  <td> <span>{{mark.exam2 }}</span> </td>
+                  <td> <span>{{mark.endterm}} </span> </td>
+                  <td> <span> {{mark.mean_marks}}</span> </td>
+                  <td> <span>{{mark.grade}}</span></td>
+                  <td> <span>{%get_subject_position mark.subjects current_student%}</span> </td>
+                  <td><span>{% subjectcomments mark.grade%}</span></td>
+                  <td> {{mark.teacher}}</td>
+                  
+                </tr>
+              
+                {% endfor %}
+                
+          </tbody>
+    </table>
+    <hr>
+    <canvas id="myChart" width="100" height="30"></canvas>
+    <script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for classes in p_classes %}  '{{classes}}',  {%endfor%}],
+            datasets: [{
+                label: 'Perfomance over time',
+                data: [ {% for classes in p_classes %}  {% mean_marks current_student  classes%},  {%endfor%}, ],
+                backgroundColor: [
+                    'rgba(189, 195, 199, 1)',
+                    'rgb(131,131,131)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    </script>
+  </div>
+  
+  {%endblock%}

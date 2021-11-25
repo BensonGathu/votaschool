@@ -1,0 +1,35 @@
+{%extends 'hod/base.html'%}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+{% load mymarks %}
+
+<div class="container">
+
+    <div class="row">
+        {% for class in all_classes%}
+
+            <div class="card">
+
+        <div class="row">
+            <div class="col-md-5"> {{class}}</div>
+            <!-- <div class="col-md-5"> <span>&#9989;</span></div> -->
+        </div>
+        <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a>
+        <a href="{% url 'allstudents' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">All Students</a>
+
+        {% all_students class as mystuds %}
+        
+     
+       
+        <br>
+    </div>
+
+        {% endfor%}
+      
+
+        {{subject}}
+    </div>
+</div>
+
+{%endblock%}

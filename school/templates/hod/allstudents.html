@@ -1,0 +1,43 @@
+{%extends 'hod/base.html'%}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+{% load mymarks %}
+
+{% for stud in all_students %}
+            
+{{stud.user.first_name}} {{stud.user.middle_name}} {{stud.user.last_name}}  <a href="{% url 'admineditprofile' stud.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Edit Profile</a>
+<a href="{% url 'principal_comment' stud.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Results</a>
+<a href="{% url 'addfees' stud.user.id %}" class="btn btn-success" tabindex="-1" role="button" aria-disabled="true">Add Fees</a>
+<a href="{% url 'delprofile' stud.user.id %}" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Delete Profile</a>
+<br><br>
+
+
+
+{%endfor%}
+
+
+  
+ 
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_classes").change(function () {
+      var url = $("#studentForm").attr("data-subjects-url");  // get the url of the `load_cities` view
+      var classesId = $(this).val();  // get the selected country ID from the HTML input
+        console.log(classesId)
+        console.log(url)
+      $.ajax({                       // initialize an AJAX request
+        url:url ,    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'classes_id': classesId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          console.log(data)
+          $("#id_subjects").html(data);  // replace the contents of the city input with the data that came from the server
+        }  
+      });
+  
+    });
+  </script>
+
+{%endblock%}

@@ -1,0 +1,102 @@
+
+  {% extends 'auth/authbase.html' %}
+  {% load static %}
+  {% load bootstrap5 %}
+  {% load crispy_forms_tags %}
+  
+  
+  
+  {% block content %}
+  
+  <div class="container">
+  
+      <div class="content-section">
+          <div class="container mt-4">
+  
+              <div class="text-center">
+                  <legend>
+                      <h3>Register Student</h3>
+                  </legend>
+                  <hr>
+                  <div class="register-form">
+                      <form class="user" action="" method="POST">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              {{ form.username|as_crispy_field }}
+                          </div>
+                          <div class="form-group row">
+                              <div class="col-sm-4 mb-3 mb-sm-0">
+                                  {{ form.first_name|as_crispy_field }}
+                              </div>
+                              <div class="col-sm-4">
+                                  {{ form.middle_name|as_crispy_field }}
+                              </div>
+                              <div class="col-sm-4">
+                                  {{ form.last_name|as_crispy_field }}
+                              </div>
+                        
+                          <div class="form-group row">
+                              <div class="col-sm-6 mb-3 mb-sm-0">
+                                  {{ form.password1|as_crispy_field }}
+                              </div>
+                              <div class="col-sm-6">
+                                  {{ form.password2|as_crispy_field }}
+                              </div>
+                          </div>
+  
+                          <button type="submit" class="btn btn-primary btn-user btn-block"> Register
+                              Student</button>
+  
+                      </form>
+                      <br>
+  
+                      <div class="text-center">
+                          <small class="text-muted" style="color: white;">Already have an account?</small> <a
+                              class="small" href="{% url 'login' %}"> Login!</a>
+                      </div>
+                  </div>
+  
+              </div>
+  
+          </div>
+  
+  
+      </div>
+  
+  </div>
+  
+  {% endblock %}
+
+
+
+
+  <!-- <div >
+    <h2>Student  Form</h2>
+  
+    <form align="left" method="post" id="studentForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+      </table>
+      <input type="submit" value="Register" class="btn btn-block btn-primary">
+      
+    </form>
+  </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+      $("#id_classes").change(function () {
+        var url = $("#studentForm").attr("data-subjects-url");  // get the url of the `load_cities` view
+        var classesId = $(this).val();  // get the selected country ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url:url ,    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+          data: {
+            'classes_id': classesId       // add the country id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_cities` view function
+            $("#id_subjects").html(data);  // replace the contents of the city input with the data that came from the server
+          }
+        });
+  
+      });
+    </script> -->

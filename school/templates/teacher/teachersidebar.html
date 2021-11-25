@@ -1,0 +1,50 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4 bg-dark" style="width: 250px; height: 100%;">
+    <!-- Brand Logo -->
+    <a href="{% url 'home' %}" class="brand-link">
+        <span class="brand-text font-weight-light">Teacher Panel</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar" >
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{{ request.principal.profile_pic}}" class="img-circle elevation-2" alt="User Image">
+            </div>
+           
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2 " style="width: 250px;">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <li class="nav-item">
+                    {% url 'home' as home %}
+                    <a href="{{home}}" class="nav-link {% if home == request.path %} active {% endif %}">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Home
+
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    {% url 'addresults' as addresults %}
+                    <a href="{{addresults}}" class="nav-link {% if addresults == request.path %} active {% endif %}">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Add Results
+
+                        </p>
+                    </a>
+                </li>
+                
+         
+   
+</ul>
+</nav>
+<!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->
+</aside>

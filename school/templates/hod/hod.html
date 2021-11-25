@@ -1,0 +1,76 @@
+{%extends 'hod/base.html'%}
+{% block content %}
+
+<div class="container">
+    <h1>VOTA SECONDARY SCHOOL</h1>
+    <br>
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- small box -->
+            <div class="small-box bg-info" style="margin-top: 30px; text-align: center;">
+                <div class="inner">
+                    <p ><strong> TOTAL STUDENTS </strong></p>
+                    <h3><strong>{{total_students}} </strong></h3>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="{% url 'allclasses' %}" class="btn btn-warning" >More info <i class="fas fa-arrow-circle-right"></i></a>
+
+            </div>
+        </div>
+     
+
+            
+        <div class="col-lg-6">
+            <!-- small box -->
+            <div class="small-box bg-success" style="margin-top: 30px; text-align: center;">
+                <div class="inner">
+                    <p ><strong> TOTAL TEACHERS </strong></p>
+                    <h3><strong>{{total_teachers}} </strong></h3>
+                </div>
+                <div class="icon" >
+                    <i class="ion ion-stats-bars" ></i>
+                </div>
+                <a href="{% url 'allteachers' %}" class="btn btn-warning">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>  
+<br>
+<div class="container" style="margin-top: 30px;">
+    <div class="row">
+        <div class="col-lg-6">
+          <div class="card">
+
+           <h4 class="card-title text-center"><b>School Motto:</b> <br>  <img src="https://static.thenounproject.com/png/317886-200.png" alt="image" style="height: 70px; width: 70px;"></h4>
+           <p class="card-body text-center">Arise and Shine</p>
+         </div>
+        </div>
+
+    <div class="col-lg-6">
+    <div class="card">
+        <h4  class="card-title text-center"><b>Mission:</b>   <br> <img src="data:image/png;base64,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" alt="image" style="height: 70px; width: 80px;" ></h4>
+        <p class="card-body text-center">To provide a sipportive envoronment for quality teaching, self discipline, motivation and excellence</p>
+    </div>
+   </div>
+    <br>
+    <div class="col-lg-6">
+    <div class="card">
+
+        <h4 class="card-title text-center"><b>Vision:</b> <br> <img src="data:image/png;base64,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" alt="image" style="height: 90px; width: 90px;"> </h4>
+        <p class="card-body text-center">To be an academic centre commited to discipline and excellence</p>
+    </div>
+    </div>
+    <div class="col-lg-6">
+    <div class="card">
+
+        <h4 class="card-title text-center"><b>Bible Verse:</b> <br> <img src="https://media.istockphoto.com/vectors/vector-bible-icon-on-a-white-background-vector-id1193335711?k=20&m=1193335711&s=170667a&w=0&h=YY60fG__SSBrGZ2Q0k5HiUT13-vhaOYEgBwZqO-F8CU=" alt="image" style="height: 90px; width: 90px;"></h4>
+        <p class="card-body text-center">No weapon formed against me shall prosper in Jesus name</p>
+    </div>
+    </div>
+    <br>
+</div>
+</div>
+
+{%endblock%}
+
