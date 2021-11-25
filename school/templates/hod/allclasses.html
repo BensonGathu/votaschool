@@ -8,26 +8,31 @@
 
     <div class="row">
         {% for class in all_classes%}
-
+            {%if class.is_current %}
             <div class="card">
 
         <div class="row">
             <div class="col-md-5"> {{class}}</div>
-            <!-- <div class="col-md-5"> <span>&#9989;</span></div> -->
+            
         </div>
-        <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a>
-        <a href="{% url 'allstudents' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">All Students</a>
+        <div>
+        
+        <a href="{% url 'getposition' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">Genereate Positions</a> <br>
+        <a href="{% url 'allstudents' class.id %}" class="btn btn-primary" style="width: 200px; height: 30px;">All Students</a> <br>
+
+       
+        <a href="{% url 'classdone' class.id %}" class="btn btn-info " tabindex="-1" role="button" aria-disabled="true">Done</a>
 
         {% all_students class as mystuds %}
+    </div>
         
-     
        
         <br>
     </div>
-
+    {%endif%}
         {% endfor%}
       
-
+   
         {{subject}}
     </div>
 </div>

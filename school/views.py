@@ -825,7 +825,7 @@ def studentInfo(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    print(len(my_marks))
+    
 
    
 
@@ -869,10 +869,10 @@ def studentInfo(request):
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes.id ,student=current_student)
     except:
-        c_report = 0
-        p_report = 0
+        # c_report = 0
+        # p_report = 0
+        pass
 
-    
     context = {
         "current_student":current_student,
         "classes":classes,
@@ -932,7 +932,7 @@ def reportform(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    print(len(my_marks))
+   
 
     
     all_students = Student.objects.filter(classes=classes)
@@ -995,7 +995,10 @@ def reportform(request):
 def donewithclass(request,id):
     current_class = get_object_or_404(Classes,pk=id)
     current_class.is_current = False
-    current_class.check = None
-  
+    current_class.class_teacher = None
+   
+    current_class.save()
+
+    return redirect("allclasses")
     
     

@@ -130,7 +130,7 @@ class Classes(models.Model):
     name = models.CharField(choices=classes,max_length=1000)
     year = models.ForeignKey(AcademicYear,on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
-    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"),unique=True)
+    class_teacher = models.ForeignKey(Teacher,on_delete=models.SET("NoNe"),unique=True,null=True)
     is_current = models.BooleanField(default=True)
 
     def __str__(self):
@@ -217,6 +217,7 @@ class Student(models.Model):
     def search_student(cls,reg_number):
         return cls.objects.filter(reg_number=reg_number).user
 
+   
     
 class Results(models.Model):
     classes = models.ForeignKey(Classes,on_delete=models.CASCADE)
@@ -327,6 +328,17 @@ class report(models.Model):
     position = models.IntegerField(blank=True,null=True)
     s_mean_marks = models.IntegerField(blank=True,null=True)
     all_points = models.FloatField(blank=True,null=True)
+
+    @property
+    def getkcpeperc(self):
+        return (self.student.kcpe_marks)/500 * 100
+
+    @property
+    def getDev(self):
+        if self.getkcpeperc > self.s_mean_marks:
+            return "-{}%".format(abs(self.getkcpeperc-self.s_mean_marks))
+        else:
+            return "+{}%".format(abs(self.getkcpeperc-self.s_mean_marks))
 
 
     @property
