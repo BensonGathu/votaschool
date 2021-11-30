@@ -1,7 +1,8 @@
 {%extends 'teacher/teacherbase.html'%}
 {% load static %}
 {% block content%}
-<form class="navbar-form navbar-right-align" action="{% url 'studentperfomancelist'%}" >
+<div class="container w-90 p-5">
+<form class="navbar-form navbar-right-align " action="{% url 'studentperfomancelist'%}" >
   
     <select name = "selclasses"class="form-control form-control-lg">
       
@@ -68,5 +69,5 @@
                   
             </tbody>
       </table>
-      <hr>
+    </div>
   {%endblock%}
