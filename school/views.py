@@ -1,4 +1,5 @@
 from re import S
+import re
 from django import conf
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
@@ -1000,5 +1001,36 @@ def donewithclass(request,id):
     current_class.save()
 
     return redirect("allclasses")
+
+def studentsperfomancelist(request):
+    allclasses = []
+    all_classes = Classes.objects.all()
+    for classes in all_classes:
+        allclasses.append(classes)    
+
+    if "selclasses" in request.GET and request.GET['selclasses']:
+        classes = request.GET.get("selclasses")
+    else:
+        classes = allclasses[-1]
+
+
+    allstudents = report.objects.filter(classes=classes).order_by("position")
+    for student in allstudents:
+        print(student)
+        print(student.all_subjects.all())
+
+    try:
+        selectedClass = get_object_or_404(Classes,pk=classes)
+        
+    except:
+        selectedClass = get_object_or_404(Classes,pk=classes.id)
+    
+    context = {
+        "allclasses":allclasses,
+        "allstudents":allstudents,
+        "selectedClass":selectedClass
+    }
+
+    return render(request,"teacher/perfomance.html",context)
     
     
