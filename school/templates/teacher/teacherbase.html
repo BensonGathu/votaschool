@@ -1,6 +1,6 @@
 {% load bootstrap3 %}
 {% load bootstrap4 %}
-{% load bootstrap5 %}
+<!-- {% load bootstrap5 %} -->
 {% load static%}
 <!DOCTYPE html>
 <html>
@@ -140,6 +140,16 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                          {% url 'studentperfomancelist' as studentperfomancelist %}
+                          <a href="{{studentperfomancelist}}" class="nav-link {% if studentperfomancelist == request.path %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                  Perfomance
+      
+                              </p>
+                          </a>
+                      </li>
                         <li class="nav-item">
                           {% url 'logout' as logout %}
                           <a href="{{logout}}" class="nav-link {% if logout == request.path %} active {% endif %}">

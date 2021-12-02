@@ -1,4 +1,5 @@
 from re import S
+import re
 from django import conf
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
@@ -696,6 +697,7 @@ def addmarks(request,id):
 @allowed_users(allowed_roles=['admin'])
 def student_positions(request,id):
     current_class = get_object_or_404(Classes,pk=id)
+    current_class_classtr = current_class.class_teacher
     allstudents = Student.objects.filter(classes=current_class)
     
     try:
@@ -707,6 +709,9 @@ def student_positions(request,id):
         if student not in record.students.all():
             record.students.add(student)
             record.save()
+    record.class_teacher = current_class_classtr.user.username
+    record.save()
+        
 
     
     all_reports = report.objects.filter(classes=id).order_by("-total_marks")
@@ -820,7 +825,7 @@ def studentInfo(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    print(len(my_marks))
+    
 
    
 
@@ -864,10 +869,10 @@ def studentInfo(request):
         p_report = report.objects.get(classes_id = selectedClass,student=current_student)
         c_report = report.objects.get(classes_id = classes.id ,student=current_student)
     except:
-        c_report = 0
-        p_report = 0
+        # c_report = 0
+        # p_report = 0
+        pass
 
-    
     context = {
         "current_student":current_student,
         "classes":classes,
@@ -927,7 +932,7 @@ def reportform(request):
     for mark in marks:
         my_marks.append(mark.mean_marks)
     all_marks = sum(my_marks)
-    print(len(my_marks))
+   
 
     
     all_students = Student.objects.filter(classes=classes)
@@ -990,8 +995,41 @@ def reportform(request):
 def donewithclass(request,id):
     current_class = get_object_or_404(Classes,pk=id)
     current_class.is_current = False
-    current_class.check = None
+    current_class.class_teacher = None
+   
+    current_class.save()
 
-# @login_required(login_url='login')
-# @allowed_users(allowed_roles=['student','teacher', 'admin'])
-  
+    return redirect("allclasses")
+
+def studentsperfomancelist(request):
+    allclasses = []
+    all_classes = Classes.objects.all()
+    for classes in all_classes:
+        allclasses.append(classes)    
+
+    if "selclasses" in request.GET and request.GET['selclasses']:
+        classes = request.GET.get("selclasses")
+    else:
+        classes = allclasses[-1]
+
+
+    allstudents = report.objects.filter(classes=classes).order_by("position")
+    for student in allstudents:
+        print(student)
+        print(student.all_subjects.all())
+
+    try:
+        selectedClass = get_object_or_404(Classes,pk=classes)
+        
+    except:
+        selectedClass = get_object_or_404(Classes,pk=classes.id)
+    
+    context = {
+        "allclasses":allclasses,
+        "allstudents":allstudents,
+        "selectedClass":selectedClass
+    }
+
+    return render(request,"teacher/perfomance.html",context)
+    
+    

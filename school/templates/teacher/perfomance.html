@@ -1,0 +1,73 @@
+{%extends 'teacher/teacherbase.html'%}
+{% load static %}
+{% block content%}
+<div class="container w-90 p-5">
+<form class="navbar-form navbar-right-align " action="{% url 'studentperfomancelist'%}" >
+  
+    <select name = "selclasses"class="form-control form-control-lg">
+      
+      <option selected>Select class </option>
+        {% for classes in allclasses %}
+        <option value = "{{classes.id}}">{{classes}}</option>
+  
+        {% endfor %}
+    </select>
+    <input type="submit" value="Search" class="btn btn-default">
+  </form> 
+  <div class="card">
+      <table class="table">
+        <thead ><tr> <h6 style="text-align:center;"><b>{{selectedClass}} results</b> </h6> </tr></thead>
+          <thead>
+            
+              <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Student Name</th>
+                <th scope="col">Maths</th>
+                <th scope="col">English</th>
+                <th scope="col">Kiswahili</th>
+                <th scope="col">Chemistry</th>
+                <th scope="col">Physics</th>
+                <th scope="col">Biology</th>
+                <th scope="col">History</th>
+                <th scope="col">Business Studies</th>
+                <th scope="col">C.R.E</th>
+                <th scope="col">Geography</th>
+                <th scope="col">Total Marks</th>
+                <th scope="col">Mean Marks</th>
+                <th scope="col">Points</th>
+                <th scope="col">Grade</th>
+                
+              </tr>
+            
+            </thead>
+           
+           
+            <tbody>
+                <tr>
+  
+                  {% for student in allstudents %}
+                  <td> {{student.position}}  </td>
+                  <td> {{student.student.user}} </td>
+                    <td><span> {{mark.exam1}} </span> </td>
+                    <td> <span>{{mark.exam2 }}</span> </td>
+                    <td> <span>{{mark.endterm}} </span> </td>
+                    <td> <span> {{mark.mean_marks}}</span> </td>
+                    <td> <span>{{mark.grade}}</span></td>
+                    <td> <span></span> </td>
+                    <td><span></span></td>
+                    <td> {{mark.teacher}}</td>
+                    <td> {{mark.teacher}}</td>
+                    <td><span></span></td>
+                    <td><span>{{student.total_marks}}</span></td>
+                    <td><span>{{student.s_mean_marks}}</span></td>
+                    <td><span>{{student.all_points}}</span></td>
+                    <td><span>{{allstudents.ov_grade}}</span></td>    
+                  </tr>
+                
+                  {% endfor %}
+                 
+                  
+            </tbody>
+      </table>
+    </div>
+  {%endblock%}
