@@ -4,9 +4,14 @@ beautifulsoup4==4.10.0
 dj-database-url==0.5.0
 Django==3.2.7
 django-bootstrap==0.2.4
+django-bootstrap-datepicker-plus==3.0.5
 django-bootstrap-v5==1.0.5
 django-bootstrap3==15.0.0
+django-bootstrap4==3.0.1
 django-bootstrap5==2.1.2
+django-crispy-forms==1.13.0
+django-heroku==0.3.1
+gunicorn==20.1.0
 importlib-metadata==3.10.1
 Pillow==8.3.2
 psycopg2==2.9.1
@@ -15,4 +20,5 @@ pytz==2021.1
 soupsieve==2.2.1
 sqlparse==0.4.2
 typing-extensions==3.10.0.2
+whitenoise==5.3.0
 zipp==3.6.0
