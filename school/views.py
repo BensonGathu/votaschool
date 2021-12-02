@@ -991,6 +991,7 @@ def donewithclass(request,id):
     current_class = get_object_or_404(Classes,pk=id)
     current_class.is_current = False
     current_class.check = None
+
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['student','teacher', 'admin'])
   
-    
-    
