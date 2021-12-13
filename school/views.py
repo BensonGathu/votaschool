@@ -121,8 +121,6 @@ def studhome(request):
     }
     return render(request,'../templates/student/student.html',context)
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def principal_registration(request):
     if request.method == 'POST':
         form = PrincipalSignUpForm(request.POST)
@@ -1032,5 +1030,38 @@ def studentsperfomancelist(request):
     }
 
     return render(request,"teacher/perfomance.html",context)
-    
+
+
+# def CreateTimetable(request):
+#     form = createTimeTableForm()
+#     if request.method == 'POST':
+#         form = createTimeTableForm(request.POST)
+#         if form.is_valid():
+#             timetable = form.save(commit=False)
+#             timetable.save()
+        
+#         return HttpResponseRedirect(request.path_info) 
+#     else:
+#         form = createTimeTableForm()
+
+#     return render(request,"hod/createtimetable.html",{"form":form})
+
+
+# def CreateTimetableItems(request):
+#     form = createTimeTableItemsForm()
+#     if request.method == 'POST':
+#         form = createTimeTableItemsForm(request.POST)
+#         if form.is_valid():
+#             timetable_items = form.save(commit=False)
+#             if timetable_items.duration > 60 :
+#                 timetable_items.endtime = timetable_items.starttime + (timetable_items.duration/ 60)
+#             else:
+#                 timetable_items.endtime = timetable_items.starttime + timetable_items.duration
+#             timetable_items.save()
+        
+#         return HttpResponseRedirect(request.path_info) 
+#     else:
+#         form = createTimeTableItemsForm()
+
+#     return render(request,"hod/createtimetableitems.html",{"form":form})
     

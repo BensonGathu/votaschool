@@ -168,51 +168,51 @@ class StudentProfileUpdateForm(forms.ModelForm):
 
 
 
-class TeacherRegisterForm(forms.Form):
-    user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    first_name = forms.CharField(max_length=100, required=True)
-    middle_name = forms.CharField(max_length=100, required=True)
-    last_name = forms.CharField(max_length=100, required=True)
-    # staff_number = forms.CharField(max_length=100, required=True)
-    subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
+# class TeacherRegisterForm(forms.Form):
+#     user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+#     first_name = forms.CharField(max_length=100, required=True)
+#     middle_name = forms.CharField(max_length=100, required=True)
+#     last_name = forms.CharField(max_length=100, required=True)
+#     # staff_number = forms.CharField(max_length=100, required=True)
+#     subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
 
-    profile_photo = forms.ImageField(required=False)
+#     profile_photo = forms.ImageField(required=False)
 
-    class Meta:
-        model = Teacher
-        fields = ('user_id', 'first_name', 'middle_name',
-                  'last_name', 'staff_number','profile_photo','subjects')
+#     class Meta:
+#         model = Teacher
+#         fields = ('user_id', 'first_name', 'middle_name',
+#                   'last_name', 'staff_number','profile_photo','subjects')
 
 
 
-class StudentRegisterForm(forms.Form):
-    user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    first_name = forms.CharField(max_length=100, required=True)
-    middle_name = forms.CharField(max_length=100, required=True)
-    last_name = forms.CharField(max_length=100, required=True)
-    reg_number = forms.CharField(max_length=100, required=True)
-    profile_photo = forms.ImageField(required=False)
-    classes = forms.ModelChoiceField(queryset=Classes.objects.all(),required=True)
-    subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
-    hse = forms.CharField(max_length=100, required=True)
+# class StudentRegisterForm(forms.Form):
+#     user_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+#     first_name = forms.CharField(max_length=100, required=True)
+#     middle_name = forms.CharField(max_length=100, required=True)
+#     last_name = forms.CharField(max_length=100, required=True)
+#     reg_number = forms.CharField(max_length=100, required=True)
+#     profile_photo = forms.ImageField(required=False)
+#     classes = forms.ModelChoiceField(queryset=Classes.objects.all(),required=True)
+#     subjects = forms.ModelMultipleChoiceField(queryset=Subjects.objects.all(),widget=forms.CheckboxSelectMultiple)
+#     hse = forms.CharField(max_length=100, required=True)
 
-    class Meta:
-        model = Student
-        fields = ('user_id', 'first_name', 'middle_name',
-                  'last_name', 'reg_number', 'hse','profile_photo','subjects','classes')
+#     class Meta:
+#         model = Student
+#         fields = ('user_id', 'first_name', 'middle_name',
+#                   'last_name', 'reg_number', 'hse','profile_photo','subjects','classes')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['subjects'].queryset = Subjects.objects.none()
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['subjects'].queryset = Subjects.objects.none()
 
-        if 'classes' in self.data:
-            try:
-                classes_id = int(self.data.get('classes'))
-                self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=classes_id).order_by('name')
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
-        # elif self.instance.pk:
-        #     self.fields['subjects'].queryset = self.instance.classes.subject_set.order_by('name')
+#         if 'classes' in self.data:
+#             try:
+#                 classes_id = int(self.data.get('classes'))
+#                 self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=classes_id).order_by('name')
+#             except (ValueError, TypeError):
+#                 pass  # invalid input from the client; ignore and fallback to empty City queryset
+#         # elif self.instance.pk:
+#         #     self.fields['subjects'].queryset = self.instance.classes.subject_set.order_by('name')
 
 
 
@@ -271,6 +271,32 @@ class addInformationForm(forms.ModelForm):
     }
 
 
+# class createTimeTableForm(forms.ModelForm):
+#     class Meta:
+#         model = TimeTable
+#         fields = ['classes']
+
+# class createTimeTableItemsForm(forms.ModelForm):
+#     class Meta:
+#         model = TimeTableItems
+#         fields = ('timetable','day_of_the_week','subject','starttime','duration')
+        
+#         def __init__(self, *args, **kwargs):
+#             super().__init__(*args, **kwargs)
+#             self.fields['subject'].queryset = Subjects.objects.none()
+
+#             if 'timetable' in self.data:
+#                 try:
+#                     timetable_id = int(self.data.get('timetable'))
+#                     self.fields['subjects'].queryset = Subjects.objects.filter(classes_id=timetable_id.classes).order_by('name')
+#                 except (ValueError, TypeError):
+#                     pass 
+        
+
+
+
+
+##############################
 # class addPrincipalCommentForm(forms.ModelForm):
 #     class Meta:
 #         model = Results

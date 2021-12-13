@@ -52,7 +52,12 @@ urlpatterns =[
 
     #student urls
     path("studentinfo/",views.studentInfo,name="studentinfo"),
-    path("reportform/", views.reportform, name="reportform")
+    path("reportform/", views.reportform, name="reportform"),
+
+
+    #timetable
+    # path('createtimetable',views.CreateTimetable,name="createtimetable"),
+    # path('createtimetableitems',views.CreateTimetableItems,name="createtimetableitems"),
 
 
 

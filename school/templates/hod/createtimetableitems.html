@@ -1,0 +1,52 @@
+<!-- {%extends 'hod/base.html'%}
+{% block content %}
+{% load static %}
+{% load bootstrap5 %}
+
+<div class="register-form">
+  <form class="user" action="" method="POST" id="timetableitemsForm" data-subjects-url="{% url 'ajax_load_subjects' %}">
+      {% csrf_token %}
+     {% bootstrap_form form %}
+    
+      <button type="submit" class="btn btn-primary btn-user btn-block"> Add</button>
+
+  </form>
+  <br>
+
+ 
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$("#id_timetable").change(function () {
+var url = $("#timetableitemsForm").attr("data-subjects-url");  // get the url of the `load_cities` view
+var classesId = $(this).val();  // get the selected country ID from the HTML input
+console.log(classesId)
+console.log(url)
+$.ajax({                       // initialize an AJAX request
+url:url ,    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+data: {
+'classes_id': classesId       // add the country id to the GET parameters
+},
+success: function (data) {   // `data` is the return of the `load_cities` view function
+console.log(data)
+$("#id_subjects").html(data);  // replace the contents of the city input with the data that came from the server
+}  
+});
+
+});
+</script>
+
+{% endblock %}
+
+   -->

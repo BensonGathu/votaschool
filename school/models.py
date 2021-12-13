@@ -1,7 +1,8 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import AbstractUser
-from django.db.models.deletion import CASCADE
+from django.db.models.deletion import CASCADE, SET_NULL
+from django.db.models.fields import DurationField
 from django.db.models.fields.files import ImageField
 from django.db.models import Count, F, Value,Avg
 from django.db.models.query_utils import subclasses
@@ -180,7 +181,7 @@ class Subjects(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     profile_photo = models.ImageField(upload_to='Profiles/',blank=True,null=True)
-    kcpe_marks = models.IntegerField()
+    kcpe_marks = models.IntegerField(default=0)
     classes = models.ForeignKey(Classes,on_delete=models.CASCADE,related_name="students",blank=True,null=True)
     subjects = models.ManyToManyField(Subjects,related_name="students")
     reg_number = models.CharField(max_length=2000)
@@ -433,3 +434,36 @@ class classRecord(models.Model):
 
     def __str__(self):
         return "This is the {} class".format(self.classes)
+
+
+# class TimeTable(models.Model):
+#     classes = models.ForeignKey(Classes,on_delete=models.CASCADE,unique=True)
+#     is_active = models.BooleanField(default=True)
+#     date_created = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return "{}'s timetable".format(self.classes)
+
+# days = (
+#     ("Monday", "Monday"),
+#     ("Tuesday", "Tuesday"),
+#     ("Wednesday", "Wednesday"),
+#     ("Thursday ","Thursday"),
+#     ("Friday ","Friday"),
+# )
+# def get_day():
+#     for day in days:
+#         return day[0]
+        
+# class TimeTableItems(models.Model):
+#     timetable = models.ForeignKey(TimeTable,on_delete=models.CASCADE)
+#     day_of_the_week = models.CharField(choices=days,max_length=2000)
+#     subject = models.ForeignKey(Subjects,on_delete=models.CASCADE)
+#     starttime = models.FloatField()
+#     duration = models.FloatField()
+#     endtime = models.FloatField()
+
+#     def __str__(self):
+#         return "{}".format(self.subject)
+
