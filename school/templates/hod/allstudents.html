@@ -3,7 +3,7 @@
 {% load static %}
 {% load bootstrap5 %}
 {% load mymarks %}
-
+<div class="container-fluid">
 {% for stud in all_students %}
             
 {{stud.user.first_name}} {{stud.user.middle_name}} {{stud.user.last_name}}  <a href="{% url 'admineditprofile' stud.user.id %}" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Edit Profile</a>
@@ -17,7 +17,7 @@
 {%endfor%}
 
 
-  
+</div>
  
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
