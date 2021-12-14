@@ -1,9 +1,9 @@
 {%extends 'hod/base.html'%}
 {% block content %}
 {% load static %}
-{% load bootstrap5 %}
-{% load mymarks %}
 
+{% load mymarks %}
+<div class="container-fluid">
 <table class="table table-striped">
     <thead>
       <tr>
@@ -29,6 +29,5 @@
         {%endfor%}
       </tbody>
 </table>
-            
-
+</div>
 {%endblock%}
