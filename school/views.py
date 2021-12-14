@@ -121,7 +121,6 @@ def studhome(request):
     }
     return render(request,'../templates/student/student.html',context)
 
-@login_required(login_url='login')
 def principal_registration(request):
     if request.method == 'POST':
         form = PrincipalSignUpForm(request.POST)
